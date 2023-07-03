@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:path/path.dart';
-import 'package:timeline/cn/wendx/repo/impl/sqlite_timele_repository.dart';
+import 'package:timeline/cn/wendx/repo/impl/sqlite_timeline_repository.dart';
+import 'package:timeline/cn/wendx/repo/timeline_reporitory.dart';
 import 'package:timelines/timelines.dart';
 
 class ContentAreaComp extends StatefulWidget {
@@ -138,7 +140,7 @@ class _InnerTimeline extends StatelessWidget {
 class _ContentItem extends StatelessWidget {
   DeliveryMessage deliveryMessage;
 
-  late SqliteTimelineRepository repo;
+  late TimelineRepository repo;
 
   Function? listen;
 
@@ -150,9 +152,8 @@ class _ContentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Listener(
       onPointerUp: (PointerUpEvent event) {
-        SqliteTimelineRepository.instance().then((repository) async {
-          repo = repository;
-          var content = await repo.readByDataTime(deliveryMessage.dateTime);
+        repo = GetIt.instance.get<TimelineRepository>();
+        repo.readByDataTime(deliveryMessage.dateTime).then((content) {
           var size = MediaQuery.of(context).size;
           var height = size.height;
           var width = size.width;
@@ -167,7 +168,7 @@ class _ContentItem extends StatelessWidget {
                       ElevatedButton(
                           onPressed: () {
                             showDeleteTip(
-                                    deliveryMessage.dateTime, repo, context)
+                                deliveryMessage.dateTime, repo, context)
                                 .then((value) {
                               if (value == "ok") {
                                 Navigator.of(context).pop();
@@ -179,7 +180,7 @@ class _ContentItem extends StatelessWidget {
                           },
                           style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all(Colors.grey)),
+                              MaterialStateProperty.all(Colors.grey)),
                           child: Text("删除")),
                       ElevatedButton(
                           onPressed: () {
@@ -197,10 +198,10 @@ class _ContentItem extends StatelessWidget {
                               return;
                             }
                             showChangeTip(deliveryMessage.dateTime,
-                                    contentController.text, repo, context).then((value) {
-                                      if(value == "ok"){
-                                        changeFlag = true;
-                                      }
+                                contentController.text, repo, context).then((value) {
+                              if(value == "ok"){
+                                changeFlag = true;
+                              }
                             });
                           },
                           child: Text("保存")),
@@ -249,7 +250,7 @@ class _ContentItem extends StatelessWidget {
     );
   }
 
-  Future showDeleteTip(DateTime dDateTime, SqliteTimelineRepository repository,
+  Future showDeleteTip(DateTime dDateTime, TimelineRepository repository,
       BuildContext context) {
     return showDialog(
         context: context,
@@ -279,7 +280,7 @@ class _ContentItem extends StatelessWidget {
   }
 
   Future showChangeTip(DateTime dDateTime, String content,
-      SqliteTimelineRepository repository, BuildContext context) {
+      TimelineRepository repository, BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) {

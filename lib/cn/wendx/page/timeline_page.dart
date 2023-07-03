@@ -2,12 +2,14 @@ import 'package:date_format/date_format.dart';
 import 'package:date_picker_timeline_fixed/date_picker_timeline_fixed.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:timeline/cn/wendx/model/timeline.dart';
 import 'package:timeline/cn/wendx/page/comp/content_area_comp.dart';
 import 'package:timeline/cn/wendx/page/comp/input_area_comp.dart';
-import 'package:timeline/cn/wendx/repo/impl/sqlite_timele_repository.dart';
+import 'package:timeline/cn/wendx/repo/impl/sqlite_timeline_repository.dart';
 import 'package:timeline/cn/wendx/repo/timeline_reporitory.dart';
 import 'package:timeline/cn/wendx/route/name_route_manager.dart';
+
 
 class TimelinePage extends StatefulWidget {
   const TimelinePage({super.key});
@@ -36,25 +38,30 @@ class TimelineState extends State<TimelinePage> {
   @override
   void initState() {
     super.initState();
-    asyncInit();
+    // asyncInit();
   }
 
-  void asyncInit() async {
-    _repository = await SqliteTimelineRepository.instance();
-    _noteInfo = await _readDate(TimelineLimitOneDay());
-    _minDate = await _repository.firstRecordDateTime();
-    print("异步初始化完成");
-    setState(() {
-      _init = true;
+  @override
+  void didChangeDependencies() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      loading(tip: "准备打开数据库");
+      _repository = await GetIt.instance.get<TimelineRepository>();
+      _noteInfo = await _readDate(TimelineLimitOneDay());
+      _minDate = await _repository.firstRecordDateTime();
+
+      print("异步初始化完成");
+      endLoading();
+      setState(() {
+        _init = true;
+      });
     });
+
   }
+
 
   @override
   Widget build(BuildContext context) {
     if (!_init) {
-      // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //   loading(tip: "稍等下下，我在打开数据库");
-      // });
       return Material(
           child: Center(
         child: Column(
@@ -92,20 +99,6 @@ class TimelineState extends State<TimelinePage> {
         appBar: _appBar(),
         body: Column(
           children: content,
-          // children: [
-          //   Expanded(
-          //     child: _buildTopTimeLine(),
-          //     flex: 1,
-          //   ),
-          //   Expanded(
-          //     child: ContentAreaComp(_noteInfo, listen: changeOrderInfo),
-          //     flex: 6,
-          //   ),
-          //   Expanded(
-          //     child: InputAreaComp(listen: addOrderInfo),
-          //     flex: 1,
-          //   ),
-          // ],
         ));
   }
 
@@ -119,7 +112,6 @@ class TimelineState extends State<TimelinePage> {
 
   AppBar _appBar() {
     return AppBar(
-      title: Text("bobo 时间线"),
       actions: [
         ElevatedButton.icon(
           icon: Icon(Icons.search),
@@ -293,9 +285,9 @@ class TimelineState extends State<TimelinePage> {
     return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
   }
 
-  Future loading({String? tip}) {
+  Future loading({String? tip, BuildContext? contextO}) {
     return showDialog(
-      context: context,
+      context: contextO ?? context,
       barrierDismissible: false, // 是否允许用户点击对话框外部关闭
       builder: (context) {
         return Dialog(
@@ -315,8 +307,8 @@ class TimelineState extends State<TimelinePage> {
     );
   }
 
-  void endLoading() {
-    Navigator.of(context).pop();
+  void endLoading({BuildContext? contextO}) {
+    Navigator.of(contextO ?? context).pop();
   }
 
   Widget _buildTopTimeLine({DateTime? initDate}) {

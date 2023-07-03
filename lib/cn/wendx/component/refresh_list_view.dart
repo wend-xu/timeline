@@ -1,7 +1,4 @@
-import 'package:date_format/date_format.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:timeline/cn/wendx/util/common_util.dart';
 
 typedef BuildItem<T> = Widget Function(T t, int index);
 
@@ -120,7 +117,7 @@ class RefreshListView<T> extends StatelessWidget {
             ///   之后向下滑动一条，是否可以
             ///
             ///
-            _loadAndMergeToCache(index,_pullSize);
+            _loadAndMergeToCache(index, _pullSize);
 
             /// 展示数据加载中的
             wrapper = _createLoadingValueNotify();
@@ -145,7 +142,7 @@ class RefreshListView<T> extends StatelessWidget {
           _cacheData.insert(index, wrapper);
 
           return ValueListenableBuilder<RefreshWrapper<T>>(
-              valueListenable:wrapper,
+              valueListenable: wrapper,
               builder: (BuildContext context, RefreshWrapper<T> wrapper,
                   Widget? child) {
                 return _buildItem(wrapper.value, index);
@@ -162,14 +159,14 @@ class RefreshListView<T> extends StatelessWidget {
   /// 因为_cacheData的length不等于_cacheCount
   ///
   /// todo 判断滑动方向来清空数据
-  void _loadAndMergeToCache(int index,int size) {
+  void _loadAndMergeToCache(int index, int size) {
     // if(_loading){
     //   print("数据加载中，直接返回");
     //   return;
     // }
     print("开始加载数据");
     _loading = true;
-    _loadData(index,size).then((loadResp){
+    _loadData(index, size).then((loadResp) {
       print("触发数据加载");
       var dataList = loadResp.dataList;
 
@@ -177,15 +174,19 @@ class RefreshListView<T> extends StatelessWidget {
         return;
       }
       var offset = loadResp.offset;
+
       /// 实际返回的数据可能 <= 需要的数据量
       var limit = dataList.length;
       for (int step = 0; step < limit; step++) {
-        int currentIndex = offset+step;
+        int currentIndex = offset + step;
         T currentData = dataList[step];
+
         /// 如果index是越界的那直接插进去，如果index没有越界的情况下获取然后set
-        if(_cacheData.length < currentIndex || _cacheData[currentIndex] == null){
-          _cacheData.insert(currentIndex,ValueNotifier( RefreshWrapper.normal(currentData)));
-        }else{
+        if (_cacheData.length < currentIndex ||
+            _cacheData[currentIndex] == null) {
+          _cacheData.insert(
+              currentIndex, ValueNotifier(RefreshWrapper.normal(currentData)));
+        } else {
           var cacheData = _cacheData[currentIndex]!;
           cacheData.value = RefreshWrapper.normal(currentData);
         }
@@ -195,10 +196,9 @@ class RefreshListView<T> extends StatelessWidget {
       _total = loadResp.total;
       _loading = false;
     });
-
   }
 
   ValueNotifier<RefreshWrapper<T>> _createLoadingValueNotify() {
-    return  ValueNotifier(RefreshWrapper.load(_loadingData()));
+    return ValueNotifier(RefreshWrapper.load(_loadingData()));
   }
 }

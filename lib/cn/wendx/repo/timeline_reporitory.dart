@@ -20,5 +20,4 @@ abstract class TimelineRepository{
   /// the first record create dateTime
   Future<DateTime> firstRecordDateTime();
 
-  Future closeSources();
 }

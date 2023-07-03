@@ -1,9 +1,9 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:timeline/cn/wendx/component/refresh_list_view_no_cache.dart';
 import 'package:timeline/cn/wendx/model/timeline.dart';
-import 'package:timeline/cn/wendx/repo/impl/sqlite_timele_repository.dart';
-import 'package:timeline/cn/wendx/util/common_util.dart';
+import 'package:timeline/cn/wendx/repo/timeline_reporitory.dart';
 import 'package:timeline/cn/wendx/util/date_utils.dart';
 
 class TimelineSearchPage extends StatefulWidget {
@@ -16,7 +16,7 @@ class TimelineSearchPage extends StatefulWidget {
 }
 
 class TimelineSearchState extends State<TimelineSearchPage> {
-  late final SqliteTimelineRepository _repositpry;
+  late final TimelineRepository _repositpry;
 
   final TextEditingController _content = TextEditingController();
   final TextEditingController _pickDateRange = TextEditingController();
@@ -30,11 +30,11 @@ class TimelineSearchState extends State<TimelineSearchPage> {
 
   @override
   void initState() {
-    SqliteTimelineRepository.instance().then((value) async {
-      _repositpry = value;
-      var search = getSearch();
-      valueNotifier = ValueNotifier(search);
-      _total = await _repositpry.count(search);
+    _repositpry= GetIt.instance.get<TimelineRepository>();
+    var search = getSearch();
+    valueNotifier = ValueNotifier(search);
+    _repositpry.count(search).then((value) {
+      _total = value;
       setState(() {
         _init = true;
       });
@@ -232,7 +232,7 @@ class TimelineSearchState extends State<TimelineSearchPage> {
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(item.content),
+                child: SelectableText(item.content),
               ),
               Divider(
                 height: 10,
