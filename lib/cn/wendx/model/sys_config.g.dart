@@ -7,17 +7,19 @@ part of 'sys_config.dart';
 // **************************************************************************
 
 SysConfig _$SysConfigFromJson(Map<String, dynamic> json) => SysConfig(
-      json['id'] as int,
-      json['key'] as String,
-      json['value'] as String,
-      json['pid'] as int,
-      json['level'] as int,
-      json['sort'] as int,
-      json['extras'] as String,
-      json['description'] as String,
-      const DateTimeEpochConverter().fromJson(json['createTime'] as int),
-      const DateTimeEpochConverter().fromJson(json['modifyTime'] as int),
-      json['delStatus'] as int,
+      id: json['id'] as int,
+      key: json['key'] as String,
+      value: json['value'] as String,
+      pid: json['pid'] as int,
+      level: json['level'] as int,
+      sort: json['sort'] as int,
+      extras: json['extras'] as String,
+      description: json['description'] as String,
+      createTime:
+          const DateTimeEpochConverter().fromJson(json['createTime'] as int),
+      modifyTime:
+          const DateTimeEpochConverter().fromJson(json['modifyTime'] as int),
+      delStatus: json['delStatus'] as int,
     );
 
 Map<String, dynamic> _$SysConfigToJson(SysConfig instance) => <String, dynamic>{

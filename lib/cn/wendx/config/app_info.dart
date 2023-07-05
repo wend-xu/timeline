@@ -1,5 +1,5 @@
 class AppInfo{
-  static const int dbVersion = 1;
+  static const int dbVersion = 2;
 
   static String dbName = "time_line.db";
 }

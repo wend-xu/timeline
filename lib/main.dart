@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:timeline/cn/wendx/config/hotkey_config.dart';
 import 'package:timeline/cn/wendx/config/service_config.dart';
 import 'package:timeline/cn/wendx/config/windows_manager_config.dart';
 import 'package:timeline/cn/wendx/route/name_route_manager.dart';
@@ -30,39 +31,8 @@ void main() async {
   /// 初始化窗口
   await initWindows();
 
-  await hotKeyManager.unregisterAll();
-
-
-  String osName = Platform.operatingSystem;
-
-  ///   {"btn_1":8589935090 ,"brn_2":4294967309 }
-  String hotkey_multiline = '''
-  {"btn_1":${KeyCode.shift.keyId} ,"brn_2":${KeyCode.enter.keyId} }
-  ''';
-  print(hotkey_multiline);
-
-  Map<String,dynamic> hotkey = {"btn_1":KeyCode.shift.keyId,"btn_2":KeyCode.enter.keyId};
-  var encode = json.encode(hotkey);
-  print(encode);
-  Map<String, dynamic> map = json.decode(encode);
-
-  if(osName == "macos"){
-    HotKeyManager.instance.register(
-      HotKey(
-        KeyCode.keyT,
-        modifiers: [KeyModifier.control,KeyModifier.shift],
-        scope: HotKeyScope.system
-      ),
-      keyDownHandler: (hotKey)async {
-        if(await windowManager.isFocused()){
-          windowManager.hide();
-        }else{
-          await windowManager.show();
-          await windowManager.focus();
-        }
-      }
-    );
-  }
+  /// 注册快捷键
+  await hotkeyInit();
 
   runApp(const MyApp());
 }

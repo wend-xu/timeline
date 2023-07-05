@@ -1,6 +1,5 @@
-import 'dart:math';
+import 'dart:convert';
 
-import 'package:date_format/date_format.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:timeline/cn/wendx/config/json_converter.dart';
 import 'package:timeline/cn/wendx/config/sys_constant.dart';
@@ -31,18 +30,19 @@ class SysConfig with BaseJsonModel<SysConfig>, BaseDbModel {
 
   int delStatus;
 
-  SysConfig(
-      this.id,
-      this.key,
-      this.value,
-      this.pid,
-      this.level,
-      this.sort,
-      this.extras,
-      this.description,
-      this.createTime,
-      this.modifyTime,
-      this.delStatus);
+  SysConfig({
+    required this.id,
+    required this.key,
+    required this.value,
+    required this.pid,
+    required this.level,
+    required this.sort,
+    required this.extras,
+    required this.description,
+    required this.createTime,
+    required this.modifyTime,
+    required this.delStatus,
+  });
 
   factory SysConfig.formJson(Map<String, dynamic> json) {
     return _$SysConfigFromJson(json);
@@ -59,6 +59,21 @@ class SysConfig with BaseJsonModel<SysConfig>, BaseDbModel {
       DateTime? modifyTime,
       this.delStatus = Const.notDel})
       : id = id ?? Snowflake.id(),
+        createTime = createTime ?? DateTime.now(),
+        modifyTime = modifyTime ?? DateTime.now();
+
+  SysConfig.createWithMapValue(this.key, Map<String, dynamic> mapValue,
+      {int? id,
+      this.pid = 0,
+      this.level = 1,
+      this.sort = 0,
+      this.extras = "{}",
+      this.description = "",
+      DateTime? createTime,
+      DateTime? modifyTime,
+      this.delStatus = Const.notDel})
+      : id = id ?? Snowflake.id(),
+        value = json.encode(mapValue),
         createTime = createTime ?? DateTime.now(),
         modifyTime = modifyTime ?? DateTime.now();
 
@@ -89,7 +104,7 @@ class SysConfig with BaseJsonModel<SysConfig>, BaseDbModel {
     return this;
   }
 
-  SysConfig child(key, value,
+  SysConfig child(String key,String  value,
       {sort = 0,
       extras = "{}",
       description = "",
@@ -104,7 +119,55 @@ class SysConfig with BaseJsonModel<SysConfig>, BaseDbModel {
         description: description);
   }
 
-  SysConfig copy(){
-    return SysConfig.formJson(toJson());
+  SysConfig childWithMapValue(String key,Map<dynamic,dynamic> value,
+      {sort = 0,
+        extras = "{}",
+        description = "",
+        DateTime? createTime,
+        DateTime? modifyTime,
+        delStatus = Const.notDel}) {
+    return SysConfig.create(key, json.encode(value),
+        pid: id,
+        level: level + 1,
+        sort: sort,
+        extras: extras,
+        description: description);
+  }
+
+  /// 如果 value 不为map
+  Map<String,dynamic> mapValue(){
+    try{
+      return json.decode(value);
+    }catch(ex){
+      return {};
+    }
+  }
+
+  SysConfig copyWith({
+    int? id,
+    String? key,
+    String? value,
+    int? pid,
+    int? level,
+    int? sort,
+    String? extras,
+    String? description,
+    DateTime? createTime,
+    DateTime? modifyTime,
+    int? delStatus,
+  }) {
+    return SysConfig(
+      id: id ?? this.id,
+      key: key ?? this.key,
+      value: value ?? this.value,
+      pid: pid ?? this.pid,
+      level: level ?? this.level,
+      sort: sort ?? this.sort,
+      extras: extras ?? this.extras,
+      description: description ?? this.description,
+      createTime: createTime ?? this.createTime,
+      modifyTime: modifyTime ?? this.modifyTime,
+      delStatus: delStatus ?? this.delStatus,
+    );
   }
 }

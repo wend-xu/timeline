@@ -27,7 +27,7 @@ Future openSqliteAndRegisterRepository() async {
       onCreate: sqliteInitHelper.onDbCreate(),
       onUpgrade: sqliteInitHelper.onDbUpgrade(),
       onDowngrade: sqliteInitHelper.onDbDowngrade(),
-      version: 1);
+      version: AppInfo.dbVersion);
   logger.i("数据库打开完成，准备初始化 sqlite repository");
   sqliteInitHelper.onDbOpen(db);
   logger.i("开始注册 repository 到 IOC 容器");

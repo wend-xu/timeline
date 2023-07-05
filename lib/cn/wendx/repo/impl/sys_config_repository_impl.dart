@@ -33,9 +33,10 @@ class SysConfigRepositoryImpl extends SysConfigRepository
 	level int default 1,
 	sort int default 0,
 	extras Text default "{}",
-	create_time DATETIME,
-	modify_time DATETIME default CURRENT_TIMESTAMP,
-	del_status INT DEFAULT 0
+	description Text default "",
+	createTime DATETIME,
+	modifyTime DATETIME default CURRENT_TIMESTAMP,
+	delStatus INT DEFAULT 0
 );
       ''');
 
@@ -47,8 +48,7 @@ class SysConfigRepositoryImpl extends SysConfigRepository
       /// 窗口是否置顶
       db.insert(
           _tableName,
-          SysConfig.create(
-                  Const.winOnTop, Const.disable,
+          SysConfig.create(Const.winOnTop, Const.disable,
                   description: "窗口是否启用置顶，默认为false")
               .toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
@@ -56,8 +56,8 @@ class SysConfigRepositoryImpl extends SysConfigRepository
       /// 窗口大小
       db.insert(
           _tableName,
-          SysConfig.create(
-                  Const.winSize, json.encode({Const.width: 800, Const.height: 600}),
+          SysConfig.createWithMapValue(
+                  Const.winSize, {Const.width: 800.00, Const.height: 600.00},
                   description: "窗口默认尺寸")
               .toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
@@ -65,47 +65,49 @@ class SysConfigRepositoryImpl extends SysConfigRepository
       /// 窗口最小尺寸
       db.insert(
           _tableName,
-          SysConfig.create(
-                  Const.winMinSize, json.encode({"width": 600, "height": 500}),
+          SysConfig.createWithMapValue(
+                  Const.winMinSize, {"width": 600.00, "height": 500.00},
                   description: "窗口最小尺寸")
               .toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
 
       /// 快捷键 父级
-      var hotKey = SysConfig.create(Const.hotKey, Const.hotKey, description: "热键父级");
+      var hotKey =
+          SysConfig.create(Const.hotKey, Const.hotKey, description: "热键父级");
       db.insert(_tableName, hotKey.toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
 
       /// 发送快捷键
+      HotKey send = HotKey(KeyCode.enter, scope: HotKeyScope.inapp);
       db.insert(
           _tableName,
           hotKey
-              .child(Const.hotKeySend, json.encode([KeyCode.enter.keyId]),
+              .childWithMapValue(Const.hotKeySend, send.toJson(),
                   description: "触发输入的热键")
               .toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
 
       /// 多行快捷键
+      HotKey hotKeyMultiLineInput = HotKey(KeyCode.enter,
+          modifiers: [KeyModifier.shift], scope: HotKeyScope.inapp);
       db.insert(
           _tableName,
           hotKey
-              .child(Const.hotKeyMultiLineInput,
-                  json.encode([KeyCode.shift.keyId, KeyCode.enter.keyId]),
+              .childWithMapValue(
+                  Const.hotKeyMultiLineInput, hotKeyMultiLineInput.toJson(),
                   description: "触发多行输入的热键")
               .toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
 
       /// 唤起快捷键
+      HotKey hotKeyCallDisplay = HotKey(KeyCode.keyT,
+          modifiers: [KeyModifier.control, KeyModifier.shift],
+          scope: HotKeyScope.system);
       db.insert(
           _tableName,
           hotKey
-              .child(
-                  Const.hotKeyCallDisplay,
-                  json.encode([
-                    KeyCode.control.keyId,
-                    KeyCode.shift.keyId,
-                    KeyCode.keyT.keyId
-                  ]),
+              .childWithMapValue(
+                  Const.hotKeyCallDisplay, hotKeyCallDisplay.toJson(),
                   description: "后台唤起应用显示的热键")
               .toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
