@@ -30,7 +30,7 @@ class TimelineSearchState extends State<TimelineSearchPage> {
 
   @override
   void initState() {
-    _repositpry= GetIt.instance.get<TimelineRepository>();
+    _repositpry = GetIt.instance.get<TimelineRepository>();
     var search = getSearch();
     valueNotifier = ValueNotifier(search);
     _repositpry.count(search).then((value) {
@@ -46,20 +46,21 @@ class TimelineSearchState extends State<TimelineSearchPage> {
     if (!_init) {
       return Material(
           child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                CircularProgressIndicator(), // 加载指示器
-                SizedBox(height: 10),
-                Text("稍等下下，我在打开数据库"),
-              ],
-            ),
-          ));
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            CircularProgressIndicator(), // 加载指示器
+            SizedBox(height: 10),
+            Text("稍等下下，我在打开数据库"),
+          ],
+        ),
+      ));
     }
     return Scaffold(
       appBar: _appBar(),
       body: Column(
-        children: [_searchArea(), Expanded(child: _contentArea())],
+        // children: [_searchArea(), Expanded(child: _contentArea())],
+        children: [ Expanded(child: _contentArea())],
       ),
     );
   }
@@ -94,14 +95,13 @@ class TimelineSearchState extends State<TimelineSearchPage> {
                           padding: const EdgeInsets.only(left: 20),
                           child: TextField(
                             decoration: const InputDecoration(
-                                hintText: "点击选择时间",
-                                icon: Icon(Icons.timer)),
+                                hintText: "点击选择时间", icon: Icon(Icons.timer)),
                             controller: _pickDateRange,
                             onTap: () {
                               showCalendarDatePicker2Dialog(
                                 context: context,
                                 config:
-                                CalendarDatePicker2WithActionButtonsConfig(
+                                    CalendarDatePicker2WithActionButtonsConfig(
                                   calendarType: CalendarDatePicker2Type.range,
                                   okButton: const Text("选择"),
                                   cancelButton: const Text("取消"),
@@ -146,10 +146,10 @@ class TimelineSearchState extends State<TimelineSearchPage> {
                       child: ElevatedButton.icon(
                           onPressed: () {
                             // valueNotifier.value = getSearch();
-                              _repositpry.count(getSearch()).then((total) {
-                                _total = total;
-                                valueNotifier.value = getSearch();
-                              });
+                            _repositpry.count(getSearch()).then((total) {
+                              _total = total;
+                              valueNotifier.value = getSearch();
+                            });
                             // loading(
                             //   context, () {
                             //   _repositpry.count(getSearch()).then((total) {
@@ -183,14 +183,14 @@ class TimelineSearchState extends State<TimelineSearchPage> {
       child: Row(children: [
         Expanded(
 
-          /// how too trigger
+            /// how too trigger
             child: ValueListenableBuilder<TimelineLimitSearch>(
-              valueListenable: valueNotifier,
-              builder: (BuildContext context, TimelineLimitSearch search,
-                  Widget? child) {
-                return _buildListView();
-              },
-            ))
+          valueListenable: valueNotifier,
+          builder: (BuildContext context, TimelineLimitSearch search,
+              Widget? child) {
+            return _buildListView();
+          },
+        ))
       ]),
     );
   }
@@ -203,12 +203,12 @@ class TimelineSearchState extends State<TimelineSearchPage> {
       },
       loadData: (index) async {
         var search = getSearch(
-          // contentLike: this._content.text,
-          // noteTimeRange: this._pickDate,
+            // contentLike: this._content.text,
+            // noteTimeRange: this._pickDate,
             limit: 1,
             offset: index);
         TimelineResp<TimelineLimitSearch> timelineResp =
-        await _repositpry.read(search);
+            await _repositpry.read(search);
         return toLoadResp(timelineResp);
       },
       loadingData: () => NoteItem.loadStyle(),
@@ -274,18 +274,17 @@ class TimelineSearchState extends State<TimelineSearchPage> {
 
   TimelineLimitSearch getSearch({int? limit, int? offset}) {
     // 如果选择了时间范围的上界，选择器插件时间为 00:00:00 将其日期 +1 变为第二日零点
-    if(_pickDate.length == 2 && _pickDate[1] != null){
+    if (_pickDate.length == 2 && _pickDate[1] != null) {
       var pickDateLe = _pickDate[1];
       pickDateLe!.add(const Duration(days: 1));
     }
-    
+
     return TimelineLimitSearch.flex(
         contentLike: _content.text,
         noteTimeRange: _pickDate,
         total: _total,
         limit: limit,
-        offset: offset
-    );
+        offset: offset);
   }
 }
 

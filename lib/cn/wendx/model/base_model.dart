@@ -1,9 +1,5 @@
  mixin BaseJsonModel<T>{
-
-  T fromJSon(Map<String,dynamic> json);
-
   Map<String,dynamic> toJson();
-
 }
 
 mixin BaseDbModel{

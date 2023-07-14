@@ -27,6 +27,7 @@ Future initWindows() async {
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
       titleBarStyle: TitleBarStyle.hidden,
+     // windowButtonVisibility: false,
       // title: "这是个标题",
       alwaysOnTop:configIsEnable(winOnTop));
 
@@ -45,6 +46,6 @@ Size createSizeFomConfig(SysConfig sysConfig){
 }
 
 bool configIsEnable(SysConfig sysConfig){
-  return sysConfig.value == Const.enable;
+  return Able.get(sysConfig.value) == Const.enable;
 }
 

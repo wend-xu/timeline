@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:timeline/cn/wendx/config/hotkey_config.dart';
 import 'package:timeline/cn/wendx/config/service_config.dart';
@@ -10,7 +11,6 @@ import 'package:timeline/cn/wendx/route/name_route_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'cn/wendx/config/repository_config.dart';
-
 
 void main() async {
   /// WidgetsFlutterBinding 将是 Widget 架构和 Flutter Engine 连接的核心桥梁，
@@ -44,19 +44,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Timeline',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      initialRoute: R.timeline,
-      routes:R.routes() ,
-        builder: (context, widget) {
-          return MediaQuery(
-            //设置文字大小不随系统设置改变
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-            child: widget!,
-          );
-        },
-    );
+        title: 'Timeline',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        navigatorObservers: [FlutterSmartDialog.observer],
+        initialRoute: R.testPage,
+        routes: R.routes(),
+        builder: FlutterSmartDialog.init(
+          builder: (context, widget) {
+            return Material(
+              child: MediaQuery(
+                //设置文字大小不随系统设置改变
+                data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                child: widget!,
+              ),
+            );
+          },
+        ));
   }
 }

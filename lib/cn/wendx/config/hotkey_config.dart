@@ -22,6 +22,7 @@ Future hotkeyInit() async {
       await windowManager.focus();
     }
   });
+  StaticLogger.i("完成注册快捷键");
 }
 
 HotKey _fromConfig(SysConfig sysConfig){

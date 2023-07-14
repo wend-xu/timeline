@@ -48,7 +48,7 @@ class SysConfigRepositoryImpl extends SysConfigRepository
       /// 窗口是否置顶
       db.insert(
           _tableName,
-          SysConfig.create(Const.winOnTop, Const.disable,
+          SysConfig.create(Const.winOnTop, Const.disable.key,
                   description: "窗口是否启用置顶，默认为false")
               .toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
@@ -115,7 +115,7 @@ class SysConfigRepositoryImpl extends SysConfigRepository
       /// 是否启用系统托盘
       db.insert(
           _tableName,
-          SysConfig.create(Const.openTray, Const.enable,
+          SysConfig.create(Const.openTray, Const.enable.key,
                   description: "是否开启系统托盘，开启后才支持后台唤起")
               .toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);

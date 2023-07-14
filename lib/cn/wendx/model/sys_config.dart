@@ -84,11 +84,6 @@ class SysConfig with BaseJsonModel<SysConfig>, BaseDbModel {
   }
 
   @override
-  SysConfig fromJSon(Map<String, dynamic> json) {
-    return _$SysConfigFromJson(json);
-  }
-
-  @override
   Map<String, dynamic> toJson() {
     return _$SysConfigToJson(this);
   }
