@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:provider/provider.dart';
 import 'package:timeline/cn/wendx/config/hotkey_config.dart';
 import 'package:timeline/cn/wendx/config/service_config.dart';
 import 'package:timeline/cn/wendx/config/windows_manager_config.dart';
+import 'package:timeline/cn/wendx/model/theme_provider.dart';
 import 'package:timeline/cn/wendx/route/name_route_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -43,14 +45,33 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ThemeProvider>(
+            create: (_) => ThemeProvider(ThemeData(primarySwatch: Colors.grey)))
+      ],
+      builder: (context, child) {
+        return _materialProviderWrapper();
+      },
+    );
+  }
+
+  Widget _materialProviderWrapper(){
+    return Consumer<ThemeProvider>(
+      builder: (_,theme,child){
+        return _material(theme);
+      }
+    );
+  }
+
+  Widget _material(ThemeProvider themeProvider) {
     return MaterialApp(
         title: 'Timeline',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        theme: themeProvider.themeData,
         navigatorObservers: [FlutterSmartDialog.observer],
         initialRoute: R.testPage,
         routes: R.routes(),
+
         builder: FlutterSmartDialog.init(
           builder: (context, widget) {
             return Material(

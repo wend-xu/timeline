@@ -9,6 +9,8 @@ import 'package:timeline/cn/wendx/model/sys_config.dart';
 
 part 'navi_rail_dest_data.g.dart';
 
+typedef DestinationSelected = void Function(int selectedIndex,BuildContext context);
+
 /// 构建 [NavigationRailDestination] 的配置数据
 @JsonSerializable()
 @IconDataConverter()
@@ -30,7 +32,7 @@ class NaviRailDestData with BaseJsonModel<NaviRailDestData> {
   String? selectedLabel;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  ValueChanged<int>? destinationSelected;
+  DestinationSelected? destinationSelected;
 
   @override
   Map<String, dynamic> toJson() {
@@ -79,7 +81,7 @@ class NaviRailDestData with BaseJsonModel<NaviRailDestData> {
     String? label,
     IconData? selectedIcon,
     String? selectedLabel,
-    ValueChanged<int>? destinationSelected,
+    DestinationSelected? destinationSelected,
   }) {
     return NaviRailDestData(
       key: key ?? this.key,

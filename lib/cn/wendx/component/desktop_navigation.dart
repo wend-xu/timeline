@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:timeline/cn/wendx/config/sys_constant.dart';
 import 'package:timeline/cn/wendx/model/navi_rail_dest_data.dart';
+import 'package:timeline/cn/wendx/model/theme_provider.dart';
 
 /// 适用于桌面的侧边导航，基于[NavigationRail]
 /// destination 区域: 按钮提供 点击选择
@@ -9,7 +11,7 @@ import 'package:timeline/cn/wendx/model/navi_rail_dest_data.dart';
 ///  [DestinationBuilder]  将 NaviRailDestData  转换为 NavigationRailDestination
 ///   提供默认实现，用于修改样式
 ///
-/// [ DestinationSelected ]  destination 区域发生点击选择时触发该逻辑，提供选择的 NaviRailDestData 和索引i
+/// [ DestinationSelectedCommon ]  destination 区域发生点击选择时触发该逻辑，提供选择的 NaviRailDestData 和索引i
 ///
 /// [ DesktopNavigationController ] 用于上级组件对导航区做局部修改操作
 ///   - 禁用特定功能
@@ -22,39 +24,14 @@ import 'package:timeline/cn/wendx/model/navi_rail_dest_data.dart';
 ///
 ///  [DesktopNavigationState ]： 导航组件的状态
 
-
-
 typedef DestinationBuilder = NavigationRailDestination Function(
-    NaviRailDestData destData, BuildContext buildContext);
+    NaviRailDestData destData, BuildContext buildContextNavi);
 
 typedef TrailingBuilder = Widget Function(
-    NaviRailDestData destData, BuildContext buildContext);
+    NaviRailDestData destData, BuildContext buildContextNavi);
 
-typedef DestinationSelected = void Function(
-    int index, NaviRailDestData selectedData);
-
-DestinationBuilder defaultDestinationBuilder =
-    (NaviRailDestData destData, BuildContext buildContext) {
-  var tooltipIcon = Tooltip(
-    message: destData.label,
-    child: Icon(destData.iconData),
-  );
-  return NavigationRailDestination(
-      icon: tooltipIcon, label: Text(destData.label));
-};
-
-TrailingBuilder defaultTrailingBuilder =
-    (NaviRailDestData destData, BuildContext buildContext) {
-  return Tooltip(
-    message: destData.label,
-    child: IconButton(
-      onPressed: () {
-        destData.destinationSelected?.call(-1);
-      },
-      icon: Icon(destData.iconData),
-    ),
-  );
-};
+typedef DestinationSelectedCommon = void Function(
+    int index, NaviRailDestData selectedData, BuildContext buildContextNavi);
 
 class DesktopNavigationController {
   DesktopNavigationState? _state;
@@ -76,7 +53,7 @@ class DesktopNavigation extends StatefulWidget {
 
   final TrailingBuilder _trailingBuilder;
 
-  final DestinationSelected _onDestinationSelected;
+  final DestinationSelectedCommon _onDestinationSelected;
 
   final int _selectIndex;
 
@@ -100,19 +77,19 @@ class DesktopNavigation extends StatefulWidget {
 }
 
 class DesktopNavigationState extends State<DesktopNavigation> {
-  NavigationRail? _navigationRail;
-
   final List<NaviRailDestData> _destList = [];
   final List<NaviRailDestData> _trailingList = [];
-
-  int _selectIndex = 0;
 
   late DestinationBuilder _destinationBuilder;
   late TrailingBuilder _trailingBuilder;
 
-  late DestinationSelected _onDestinationSelectedCommon;
+  late DestinationSelectedCommon _onDestinationSelectedCommon;
 
+  int _selectIndex = 0;
+  NavigationRail? _navigationRail;
   DesktopNavigationController? _controller;
+
+  final double _width = 72;
 
   @override
   void initState() {
@@ -133,8 +110,15 @@ class DesktopNavigationState extends State<DesktopNavigation> {
       destinations: destinations,
       selectedIndex: _selectIndex,
       onDestinationSelected: _onDestinationSelected,
-      leading: const SizedBox(height: 26,),
+      leading: const SizedBox(
+        height: 26,
+      ),
       trailing: _buildTrailingArea(_trailingList, context),
+
+      /// 样式部分：
+      minWidth: _width,
+      backgroundColor: _bgColor(context),
+      unselectedIconTheme: _unselectedIconTheme(context),
     );
     return _navigationRail!;
   }
@@ -142,9 +126,9 @@ class DesktopNavigationState extends State<DesktopNavigation> {
   void _onDestinationSelected(index) {
     var destData = _destList[index];
     if (destData.destinationSelected != null) {
-      destData.destinationSelected!(index);
+      destData.destinationSelected!(index, context);
     } else {
-      _onDestinationSelectedCommon(index, _destList[index]);
+      _onDestinationSelectedCommon(index, _destList[index], context);
     }
     setState(() {
       _selectIndex = index;
@@ -152,9 +136,9 @@ class DesktopNavigationState extends State<DesktopNavigation> {
   }
 
   void _classify(List<NaviRailDestData> destinationDataList) {
-    destinationDataList.sort((el,elNext){
+    destinationDataList.sort((el, elNext) {
       var compareTo = el.sort.compareTo(elNext.sort);
-      return compareTo == 0?el.key.compareTo(elNext.key):compareTo;
+      return compareTo == 0 ? el.key.compareTo(elNext.key) : compareTo;
     });
     for (var element in destinationDataList) {
       switch (element.areaIn) {
@@ -192,10 +176,19 @@ class DesktopNavigationState extends State<DesktopNavigation> {
         padding: const EdgeInsets.only(bottom: 20.0),
         child: Column(children: [
           const Spacer(),
+          _divider(buildContext),
           ..._convertToTrailing(_trailingList, buildContext)
         ]),
       ),
     ));
+  }
+
+  Widget _divider(BuildContext buildContext){
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+          maxWidth: _width , minWidth: _width*0.9 , minHeight: 4, maxHeight: 6),
+      child: Center(child: Divider(color: Theme.of(buildContext).dividerColor ,indent: 4,endIndent: 4,),)
+    );
   }
 
   List<Widget> _convertToTrailing(
@@ -209,4 +202,42 @@ class DesktopNavigationState extends State<DesktopNavigation> {
     }
     return trailing;
   }
+
+  Color _bgColor(BuildContext buildContext) {
+    ThemeData themeData = Theme.of(context);
+    Color primaryColor = themeData.primaryColor;
+    return (primaryColor is MaterialColor)
+        ? primaryColor.shade900
+        : themeData.colorScheme.secondary;
+  }
+
+  IconThemeData _unselectedIconTheme(BuildContext buildContext) {
+    return IconThemeData(color: Theme.of(context).colorScheme.surface);
+  }
 }
+
+DestinationBuilder defaultDestinationBuilder =
+    (NaviRailDestData destData, BuildContext buildContextNavi) {
+  var tooltipIcon = Tooltip(
+    message: destData.label,
+    child: Icon(destData.iconData),
+  );
+  return NavigationRailDestination(
+      icon: tooltipIcon, label: Text(destData.label));
+};
+
+TrailingBuilder defaultTrailingBuilder =
+    (NaviRailDestData destData, BuildContext buildContextNavi) {
+  return Tooltip(
+    message: destData.label,
+    child: IconButton(
+      onPressed: () {
+        destData.destinationSelected?.call(-1, buildContextNavi);
+      },
+      icon: Icon(
+        destData.iconData,
+        color: Theme.of(buildContextNavi).colorScheme.surface,
+      ),
+    ),
+  );
+};
