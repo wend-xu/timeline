@@ -49,7 +49,7 @@ TrailingBuilder defaultTrailingBuilder =
     message: destData.label,
     child: IconButton(
       onPressed: () {
-        destData.destinationSelected ?? (-1);
+        destData.destinationSelected?.call(-1);
       },
       icon: Icon(destData.iconData),
     ),

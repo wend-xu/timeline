@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:logger/logger.dart';
 import 'package:timeline/cn/wendx/component/desktop_navigation.dart';
 import 'package:timeline/cn/wendx/config/sys_constant.dart';
 import 'package:timeline/cn/wendx/model/navi_rail_dest_data.dart';
@@ -12,6 +13,7 @@ class TestPage extends StatelessWidget {
       NaviRailDestData.create("key2", Icons.dashboard,"看板"),
       NaviRailDestData.create("key3", Icons.calendar_view_day_outlined,"日程"),
       NaviRailDestData.create("key4", Icons.settings,"设置",areaIn: Const.desktopNaviArea.trailing,destinationSelected: (index){
+        Logger().i("设置按钮被点击");
         SmartDialog.showToast("is always $index in trailing");
       }),
     ], (int index, NaviRailDestData selectedData) {
