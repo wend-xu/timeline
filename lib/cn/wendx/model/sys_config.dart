@@ -114,6 +114,11 @@ class SysConfig with BaseJsonModel<SysConfig>, BaseDbModel {
         description: description);
   }
 
+  SysConfig parent(SysConfig parent){
+    pid = parent.id;
+    return this;
+  }
+
   SysConfig childWithMapValue(String key,Map<dynamic,dynamic> value,
       {sort = 0,
         extras = "{}",

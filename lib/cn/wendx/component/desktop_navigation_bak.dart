@@ -66,10 +66,10 @@ class DesktopNavigation extends StatefulWidget {
 
   DesktopNavigation(this._destinationDataList, this._onDestinationSelected,
       {super.key,
-        int selectIndex = 0,
-        DestinationBuilder? destinationBuilder,
-        TrailingBuilder? trailingBuilder,
-        DesktopNavigationController? controller})
+      int selectIndex = 0,
+      DestinationBuilder? destinationBuilder,
+      TrailingBuilder? trailingBuilder,
+      DesktopNavigationController? controller})
       : _selectIndex = selectIndex,
         _destinationBuilder = destinationBuilder ?? defaultDestinationBuilder,
         _trailingBuilder = trailingBuilder ?? defaultTrailingBuilder,
@@ -105,13 +105,12 @@ class DesktopNavigationState extends State<DesktopNavigation> {
     _onDestinationSelectedCommon = widget._onDestinationSelected;
     _controller = widget._controller;
     _controller?.binding(this);
-    _classify(widget._destinationDataList);
+     _classify(widget._destinationDataList);
   }
 
 
   @override
   Widget build(BuildContext context) {
-    _classify(widget._destinationDataList);
     var destinations = _convertToDestination(_destList, context);
     _navigationRail = NavigationRail(
       destinations: destinations,
@@ -143,8 +142,6 @@ class DesktopNavigationState extends State<DesktopNavigation> {
   }
 
   void _classify(List<NaviRailDestData> destinationDataList) {
-    _destList.clear();
-    _trailingList.clear();
     destinationDataList.sort((el, elNext) {
       var compareTo = el.sort.compareTo(elNext.sort);
       return compareTo == 0 ? el.key.compareTo(elNext.key) : compareTo;
@@ -180,23 +177,23 @@ class DesktopNavigationState extends State<DesktopNavigation> {
     }
     return Expanded(
         child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
-            child: Column(children: [
-              const Spacer(),
-              _divider(buildContext),
-              ..._convertToTrailing(_trailingList, buildContext)
-            ]),
-          ),
-        ));
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 20.0),
+        child: Column(children: [
+          const Spacer(),
+          _divider(buildContext),
+          ..._convertToTrailing(_trailingList, buildContext)
+        ]),
+      ),
+    ));
   }
 
   Widget _divider(BuildContext buildContext){
     return ConstrainedBox(
-        constraints: BoxConstraints(
-            maxWidth: _width , minWidth: _width*0.9 , minHeight: 4, maxHeight: 6),
-        child: Center(child: Divider(color: Theme.of(buildContext).dividerColor ,indent: 4,endIndent: 4,),)
+      constraints: BoxConstraints(
+          maxWidth: _width , minWidth: _width*0.9 , minHeight: 4, maxHeight: 6),
+      child: Center(child: Divider(color: Theme.of(buildContext).dividerColor ,indent: 4,endIndent: 4,),)
     );
   }
 

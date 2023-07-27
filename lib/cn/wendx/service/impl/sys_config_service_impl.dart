@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get_it/get_it.dart';
 import 'package:timeline/cn/wendx/config/get_it_helper.dart';
 import 'package:timeline/cn/wendx/model/sys_config.dart';
@@ -110,5 +112,13 @@ class SysConfigServiceImpl extends SysConfigService with IocRegister {
   @override
   Future refresh() async {
     await _asyncInit();
+  }
+
+  @override
+  Future<List<T>> readByParentWithConvert<T>(String parentKey,
+  {required T Function(SysConfig) converter}) async {
+    await Future.delayed(Duration(seconds: 3));
+    List<SysConfig> configList = await readByParent(parentKey);
+    return configList.map((el) => converter(el)).toList() ;
   }
 }

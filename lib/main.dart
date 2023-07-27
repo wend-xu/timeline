@@ -8,7 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:timeline/cn/wendx/config/hotkey_config.dart';
 import 'package:timeline/cn/wendx/config/service_config.dart';
 import 'package:timeline/cn/wendx/config/windows_manager_config.dart';
-import 'package:timeline/cn/wendx/model/theme_provider.dart';
+import 'package:timeline/cn/wendx/provider/func_area_provider.dart';
+import 'package:timeline/cn/wendx/provider/navi_provider.dart';
+import 'package:timeline/cn/wendx/provider/theme_provider.dart';
 import 'package:timeline/cn/wendx/route/name_route_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -48,30 +50,34 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ThemeProvider>(
-            create: (_) => ThemeProvider(ThemeData(primarySwatch: Colors.grey)))
+            create: (_) =>
+                ThemeProvider(ThemeData(primarySwatch: Colors.grey))),
+        ChangeNotifierProvider<FuncAreaProvider>(
+            create: (_) => FuncAreaProvider("key1")),
+        ChangeNotifierProvider<NaviProvider>(create: (_) => NaviProvider())
       ],
       builder: (context, child) {
-        return _materialProviderWrapper();
+        return _materialProviderWrapper(context);
       },
     );
   }
 
-  Widget _materialProviderWrapper(){
-    return Consumer<ThemeProvider>(
-      builder: (_,theme,child){
-        return _material(theme);
-      }
-    );
+  Widget _materialProviderWrapper(BuildContext buildContext) {
+    // return Consumer<ThemeProvider>(
+    //   builder: (_,theme,child){
+    //     return _material(theme);
+    //   }
+    // );
+    return _material(buildContext);
   }
 
-  Widget _material(ThemeProvider themeProvider) {
+  Widget _material(buildContext) {
     return MaterialApp(
         title: 'Timeline',
-        theme: themeProvider.themeData,
+        theme: Provider.of<ThemeProvider>(buildContext).themeData,
         navigatorObservers: [FlutterSmartDialog.observer],
-        initialRoute: R.testPage,
+        initialRoute: R.layoutPage,
         routes: R.routes(),
-
         builder: FlutterSmartDialog.init(
           builder: (context, widget) {
             return Material(

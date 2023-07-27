@@ -39,6 +39,18 @@ class SystemConstant {
 
   static const String en = "en";
 
+  static const String naviGroup = "naviGroup ";
+
+  static const String naviTimeline = "naviTimeline";
+
+  static const String naviSetting = "naviSetting ";
+
+  static const String naviLoading = "naviLoading";
+
+  static const String naviRefresh = "naviRefresh";
+
+  static const String naviNothing = "naviNothing";
+
   SystemConstant._();
 }
 

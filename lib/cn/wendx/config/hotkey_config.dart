@@ -7,7 +7,7 @@ import 'package:timeline/cn/wendx/service/sys_config_service.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future hotkeyInit() async {
-  StaticLogger.i("开始注册快捷键");
+  StaticLogger.i("开始注册全局快捷键");
   var hotKeyManager = HotKeyManager.instance;
 
   await hotKeyManager.unregisterAll();
@@ -22,7 +22,7 @@ Future hotkeyInit() async {
       await windowManager.focus();
     }
   });
-  StaticLogger.i("完成注册快捷键");
+  StaticLogger.i("完成全局快捷键注册");
 }
 
 HotKey _fromConfig(SysConfig sysConfig){

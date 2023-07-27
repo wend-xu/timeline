@@ -26,8 +26,8 @@ Future initWindows() async {
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.hidden,
-     // windowButtonVisibility: false,
+      titleBarStyle: TitleBarStyle.normal,
+     windowButtonVisibility:true,
       // title: "这是个标题",
       alwaysOnTop:configIsEnable(winOnTop));
 
@@ -36,6 +36,7 @@ Future initWindows() async {
     await windowManager.show();
     await windowManager.focus();
   });
+
 }
 
 Size createSizeFomConfig(SysConfig sysConfig){

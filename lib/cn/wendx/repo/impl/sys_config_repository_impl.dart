@@ -1,11 +1,11 @@
-import 'dart:convert';
-
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:logger/logger.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:timeline/cn/wendx/config/get_it_helper.dart';
 import 'package:timeline/cn/wendx/config/sys_constant.dart';
+import 'package:timeline/cn/wendx/model/navi_rail_dest_data.dart';
 import 'package:timeline/cn/wendx/model/sys_config.dart';
 import 'package:timeline/cn/wendx/repo/sqliite_repository.dart';
 import 'package:timeline/cn/wendx/repo/sys_config_repository.dart';
@@ -119,6 +119,18 @@ class SysConfigRepositoryImpl extends SysConfigRepository
                   description: "是否开启系统托盘，开启后才支持后台唤起")
               .toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
+
+      /// 导航 父级
+      var naviGroup = SysConfig.create(Const.naviGroup, Const.naviGroup,
+          description: "导航父级");
+      db.insert(_tableName, naviGroup.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+
+      var timeline = NaviRailDestData.create(Const.naviTimeline,Icons.timeline, "时间线",sort: 1).toConfig().parent(naviGroup);
+      db.insert(_tableName,timeline.toJson(),conflictAlgorithm: ConflictAlgorithm.replace);
+
+      var settings = NaviRailDestData.create(Const.naviSetting,Icons.settings, "设置",sort: 2).toConfig().parent(naviGroup);
+      db.insert(_tableName,settings.toJson(),conflictAlgorithm: ConflictAlgorithm.replace);
     });
   }
 
