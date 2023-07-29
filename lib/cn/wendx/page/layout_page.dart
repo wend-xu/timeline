@@ -7,6 +7,7 @@ import 'package:timeline/cn/wendx/component/desktop_navigation.dart';
 import 'package:timeline/cn/wendx/component/function_area.dart';
 import 'package:timeline/cn/wendx/config/sys_constant.dart';
 import 'package:timeline/cn/wendx/page/test_page.dart';
+import 'package:timeline/cn/wendx/page/timeline/timeline_func_area.dart';
 import 'package:timeline/cn/wendx/provider/func_area_provider.dart';
 import 'package:timeline/cn/wendx/provider/navi_provider.dart';
 
@@ -37,14 +38,14 @@ class LayoutPage extends StatelessWidget {
         funcAreaProvider.doNavi(selectedData.key);
       });
     });
-  }
+}
 
   Widget _funcAreaBuilder(BuildContext buildContext) {
     return FuncAreaWidget([
       FuncAreaContWrapper(
           indexKey: Const.naviTimeline,
           builder: (buildContext) {
-            return const Text(Const.naviTimeline);
+            return TimelineFuncArea();
           }),
       FuncAreaContWrapper(
           indexKey: Const.naviSetting,

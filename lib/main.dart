@@ -48,11 +48,18 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    var themeData = ThemeData(
+      primarySwatch: Colors.grey,
+      inputDecorationTheme: const InputDecorationTheme(
+        labelStyle: TextStyle(fontSize: 12),
+        hintStyle: TextStyle(fontSize: 12)
+      ),
+    );
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ThemeProvider>(
-            create: (_) =>
-                ThemeProvider(ThemeData(primarySwatch: Colors.grey))),
+            create: (_) => ThemeProvider(themeData)),
         ChangeNotifierProvider<FuncAreaProvider>(
             create: (_) => FuncAreaProvider(Const.naviTimeline)),
         ChangeNotifierProvider<NaviProvider>(create: (_) => NaviProvider())

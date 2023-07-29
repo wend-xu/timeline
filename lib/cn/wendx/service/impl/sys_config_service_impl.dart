@@ -117,7 +117,7 @@ class SysConfigServiceImpl extends SysConfigService with IocRegister {
   @override
   Future<List<T>> readByParentWithConvert<T>(String parentKey,
   {required T Function(SysConfig) converter}) async {
-    await Future.delayed(Duration(seconds: 3));
+    //await Future.delayed(Duration(seconds: 3));
     List<SysConfig> configList = await readByParent(parentKey);
     return configList.map((el) => converter(el)).toList() ;
   }

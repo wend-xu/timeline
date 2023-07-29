@@ -50,7 +50,7 @@ class FuncAreaWidget extends StatelessWidget {
         contentWidget != null ? contentWidget.builder : _undefinedBuilder;
 
     return Container(
-      width: 240.0,
+      width: 280.0,
       height: double.infinity,
       padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
       child: Card(
