@@ -15,6 +15,7 @@ import 'package:timeline/cn/wendx/route/name_route_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'cn/wendx/config/repository_config.dart';
+import 'cn/wendx/config/sys_constant.dart';
 
 void main() async {
   /// WidgetsFlutterBinding 将是 Widget 架构和 Flutter Engine 连接的核心桥梁，
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
             create: (_) =>
                 ThemeProvider(ThemeData(primarySwatch: Colors.grey))),
         ChangeNotifierProvider<FuncAreaProvider>(
-            create: (_) => FuncAreaProvider("key1")),
+            create: (_) => FuncAreaProvider(Const.naviTimeline)),
         ChangeNotifierProvider<NaviProvider>(create: (_) => NaviProvider())
       ],
       builder: (context, child) {
