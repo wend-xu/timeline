@@ -1,5 +1,5 @@
 /// snowflake include the mainly logic
-class Snowflake {
+class IdGen {
   static const int _twepoch = 1546272000000;
 
   /// 机器id所占的位数
@@ -42,7 +42,7 @@ class Snowflake {
   /// 上次生成ID的时间截
   int _lastTimestamp = -1;
 
-  Snowflake({int? workerId,int? datacenterId}) {
+  IdGen({int? workerId,int? datacenterId}) {
     _workerId = workerId??9;
     _datacenterId = datacenterId??23;
 
@@ -56,7 +56,7 @@ class Snowflake {
     }
   }
 
-  int getId() {
+  int getId({bool short = true}) {
     int timestamp = currentTimeStamp;
 
     // 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
@@ -82,6 +82,12 @@ class Snowflake {
     // 上次生成ID的时间截
     _lastTimestamp = timestamp;
 
+
+    /// dart的int类型使用雪花算法会溢出，直接移除机器位和数据中心位，生成一个短板的
+    if(short){
+      return ((timestamp - _twepoch) << _workerIdShift) | _sequence;
+    }
+
     // 移位并通过或运算拼到一起组成64位的ID
     return ((timestamp - _twepoch) << _timestampeftShift) |
     (_datacenterId << _datacenterIdShift) |
@@ -103,8 +109,10 @@ class Snowflake {
     return DateTime.now().millisecondsSinceEpoch;
   }
 
-  static final Snowflake _snowflake = Snowflake();
+  static final IdGen _idGen = IdGen();
+
   static int id(){
-    return _snowflake.getId();
+    return _idGen.getId();
   }
+
 }
