@@ -2,7 +2,7 @@ import 'package:date_picker_timeline_fixed/date_picker_timeline_fixed.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:timeline/cn/wendx/model/timeline.dart';
+import 'package:timeline/cn/wendx/model/timeline_search.dart';
 import 'package:timeline/cn/wendx/page/comp/content_area_comp.dart';
 import 'package:timeline/cn/wendx/page/comp/input_area_comp.dart';
 import 'package:timeline/cn/wendx/repo/timeline_reporitory.dart';

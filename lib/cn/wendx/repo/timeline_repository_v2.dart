@@ -6,13 +6,13 @@ abstract class TimelineRepositoryV2{
   Future<void> write(Timeline timeline);
 
   /// read one day date,must set a day which want filter
-  Future<TimelineResp<TimelineLimitOneDay>> readOneDay(TimelineLimitOneDay limit);
+  Future<TimelineRespV2<TimelineLimitOneDay>> readOneDay(TimelineLimitOneDay limit);
 
-  Future<TimelineResp<TimelineLimitSearch>> read(TimelineLimitSearch search);
+  Future<TimelineRespV2<TimelineLimitSearch>> read(TimelineLimitSearch search);
 
   Future<int> count(TimelineLimitSearch search);
 
-  Future<String> readByDataTime(DateTime dateTime);
+  Future<Timeline> readByDataTime(DateTime dateTime);
 
   Future<bool> updateByDateTime(DateTime dateTime,String content);
 

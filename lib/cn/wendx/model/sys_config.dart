@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:timeline/cn/wendx/config/json_converter.dart';
 import 'package:timeline/cn/wendx/config/sys_constant.dart';
 import 'package:timeline/cn/wendx/model/base_model.dart';
-import 'package:timeline/cn/wendx/util/snow_flake.dart';
+import 'package:timeline/cn/wendx/util/id_generator.dart';
 
 part 'sys_config.g.dart';
 
@@ -58,7 +58,7 @@ class SysConfig with BaseJsonModel<SysConfig>, BaseDbModel {
       DateTime? createTime,
       DateTime? modifyTime,
       this.delStatus = Const.notDel})
-      : id = id ?? Snowflake.id(),
+      : id = id ??IdGen.id(),
         createTime = createTime ?? DateTime.now(),
         modifyTime = modifyTime ?? DateTime.now();
 
@@ -72,7 +72,7 @@ class SysConfig with BaseJsonModel<SysConfig>, BaseDbModel {
       DateTime? createTime,
       DateTime? modifyTime,
       this.delStatus = Const.notDel})
-      : id = id ?? Snowflake.id(),
+      : id = id ?? IdGen.id(),
         value = json.encode(mapValue),
         createTime = createTime ?? DateTime.now(),
         modifyTime = modifyTime ?? DateTime.now();

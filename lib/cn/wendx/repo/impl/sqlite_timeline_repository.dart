@@ -4,7 +4,7 @@ import 'package:date_format/date_format.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:timeline/cn/wendx/config/get_it_helper.dart';
-import 'package:timeline/cn/wendx/model/timeline.dart';
+import 'package:timeline/cn/wendx/model/timeline_search.dart';
 import 'package:timeline/cn/wendx/repo/sqliite_repository.dart';
 import 'package:timeline/cn/wendx/repo/timeline_reporitory.dart';
 

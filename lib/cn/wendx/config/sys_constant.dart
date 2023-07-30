@@ -7,6 +7,8 @@ class SystemConstant {
 
   static const int del = 1;
 
+  static const String total = "total";
+
   static const Able enable = Able.enable;
 
   static const Able disable = Able.disable;

@@ -2,7 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:timeline/cn/wendx/component/refresh_list_view_no_cache.dart';
-import 'package:timeline/cn/wendx/model/timeline.dart';
+import 'package:timeline/cn/wendx/model/timeline_search.dart';
 import 'package:timeline/cn/wendx/repo/timeline_reporitory.dart';
 import 'package:timeline/cn/wendx/util/date_utils.dart';
 

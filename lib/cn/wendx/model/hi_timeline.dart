@@ -1,7 +1,17 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:timeline/cn/wendx/model/base_model.dart';
 
-class Timeline with BaseDbModel{
+import '../config/json_converter.dart';
+
+part 'hi_timeline.g.dart';
+
+
+@JsonSerializable()
+@DateTimeEpochConverter()
+class HiTimeline with BaseDbModel{
   int id;
+
+  int tId;
 
   DateTime createTime;
 
@@ -17,8 +27,9 @@ class Timeline with BaseDbModel{
 
   int delStatus;
 
-  Timeline({
+  HiTimeline({
     required this.id,
+    required this.tId,
     required this.createTime,
     required this.modifyTime,
     required this.contentRich,
@@ -28,8 +39,9 @@ class Timeline with BaseDbModel{
     required this.delStatus,
   });
 
-  Timeline copyWith({
+  HiTimeline copyWith({
     int? id,
+    int? tId,
     DateTime? createTime,
     DateTime? modifyTime,
     String? contentRich,
@@ -38,8 +50,9 @@ class Timeline with BaseDbModel{
     int? version,
     int? delStatus,
   }) {
-    return Timeline(
+    return HiTimeline(
       id: id ?? this.id,
+      tId: tId ?? this.tId,
       createTime: createTime ?? this.createTime,
       modifyTime: modifyTime ?? this.modifyTime,
       contentRich: contentRich ?? this.contentRich,

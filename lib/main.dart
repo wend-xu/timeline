@@ -12,6 +12,7 @@ import 'package:timeline/cn/wendx/provider/func_area_provider.dart';
 import 'package:timeline/cn/wendx/provider/navi_provider.dart';
 import 'package:timeline/cn/wendx/provider/theme_provider.dart';
 import 'package:timeline/cn/wendx/route/name_route_manager.dart';
+import 'package:timeline/cn/wendx/util/id_generator.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'cn/wendx/config/repository_config.dart';

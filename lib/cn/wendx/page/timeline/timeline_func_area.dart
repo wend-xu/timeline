@@ -12,7 +12,9 @@ class TimelineFuncArea extends StatelessWidget{
         children: [
           SearchArea(),
           SizedBox(height: 5,),
-          Divider(height: 5,)
+          Divider(height: 5,),
+          SizedBox(height: 5,),
+          Center(child: Text("这里还可以放很多东西,之后在放进来"),),
         ],
       )
     );
@@ -81,5 +83,4 @@ class SearchArea extends StatelessWidget{
       ],
     );
   }
-  
 }
