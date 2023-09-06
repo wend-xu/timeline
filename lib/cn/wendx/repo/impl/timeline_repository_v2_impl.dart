@@ -1,3 +1,6 @@
+import 'dart:collection';
+
+import 'package:date_format/date_format.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:timeline/cn/wendx/config/get_it_helper.dart';
@@ -11,21 +14,21 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
     with SqliteRepository, IocRegister<TimelineRepositoryV2> {
   static const String _tableName = "timeline";
 
-  final Logger _log = Logger();
+  final Logger _l = Logger();
 
   @override
   void upgradeSqlScriptRegister(OnVersionSqlScriptHolder upgradeHolder) {
     upgradeHolder.onVersion(2, (db, oldVersion, newVersion) {
       db.execute('''
  CREATE TABLE $_tableName (	
-	id INTEGER PRIMARY KEY,
-	createTime DATETIME,
-	modifyTime DATETIME default CURRENT_TIMESTAMP,
+	$colId INTEGER PRIMARY KEY,
+	$colCreateTime DATETIME,
+	$colModifyTime DATETIME default CURRENT_TIMESTAMP,
 	contentRich Text Default "",
 	contentText Text Default "",
 	contentNormalize Text Default "",
 	version INT default 1,
-	delStatus INT DEFAULT 0
+	$colDelStatus INT DEFAULT 0
 );
       ''');
     });
@@ -36,18 +39,16 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
     GetIt.instance.registerSingleton<TimelineRepositoryV2>(instance);
   }
 
-
-
   @override
   Future<int> count(TimelineLimitSearch search) async {
     String where = '''
-    where del_status = ${Const.notDel} 
+    where $limitNotDel 
       ${(search.contentLike == null || search.contentLike!.isEmpty)
         ? ''
         : 'and contentNormalize like "%${search.contentLike!}%"'}
-      ${search.noteTimeLe == null ? '' : 'and createTime >= "${search
+      ${search.noteTimeLe == null ? '' : 'and $colCreateTime >= "${search
         .noteTimeLe!.millisecondsSinceEpoch}"'} 
-      ${search.noteTimeGe == null ? '' : 'and createTime <= "${search
+      ${search.noteTimeGe == null ? '' : 'and $colCreateTime <= "${search
         .noteTimeGe!.millisecondsSinceEpoch}"'} 
     ''';
 
@@ -61,46 +62,99 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
   }
 
   @override
-  Future<bool> deleteByDateTime(DateTime dateTime) {
-    // TODO: implement deleteByDateTime
-    throw UnimplementedError();
+  Future<bool> deleteByDateTime(DateTime dateTime) async {
+    var count = await database.update(_tableName, {colDelStatus :Const.del},
+        where: "$colCreateTime =  ? and $colDelStatus = ${Const.notDel}",
+        whereArgs: [dateTime.millisecondsSinceEpoch]);
+    return count >= 1;
   }
 
   @override
-  Future<DateTime> firstRecordDateTime() {
-    // TODO: implement firstRecordDateTime
-    throw UnimplementedError();
+  Future<DateTime> firstRecordDateTime() async {
+    List<Map<String, dynamic>> rawFromDb = await database.rawQuery(
+        "select * from $_tableName where $colDelStatus = ${Const.notDel} order by $colCreateTime asc limit 1");
+    if (rawFromDb.isEmpty) {
+      return DateTime.now();
+    }
+    var firstRecord = rawFromDb[0];
+    return DateTime.fromMillisecondsSinceEpoch(firstRecord["createTime"]);
   }
 
   @override
-  Future<TimelineRespV2<TimelineLimitSearch>> read(TimelineLimitSearch search) {
-    // TODO: implement read
-    throw UnimplementedError();
+  Future<TimelineRespV2<TimelineLimitSearch>> read(TimelineLimitSearch search) async {
+    String where = '''
+    where $colDelStatus = ${Const.notDel} 
+      ${(search.contentLike == null || search.contentLike!.isEmpty)
+        ? ''
+        : 'and contentNormalize like "%${search.contentLike!}%"'}
+      ${search.noteTimeLe == null ? '' : 'and $colCreateTime >= "${search
+        .noteTimeLe!.millisecondsSinceEpoch}"'} 
+      ${search.noteTimeGe == null ? '' : 'and $colCreateTime <= "${search
+        .noteTimeGe!.millisecondsSinceEpoch}"'} 
+    ''';
+
+    String sql = '''
+    select * from $_tableName 
+      $where 
+      order by $colCreateTime desc limit ${search.limit} offset ${search
+        .offset};
+    ''';
+
+    var total = await count(search);
+    search.total = total;
+
+    _l.i("查询语句：\n $sql");
+    List<Map<String, dynamic>> rawFromDb =
+    total > 0 ? await database.rawQuery(sql) : [];
+    return TimelineRespV2(search, _convert(rawFromDb));
   }
 
   @override
-  Future<Timeline> readByDataTime(DateTime dateTime) {
-    // TODO: implement readByDataTime
-    throw UnimplementedError();
+  Future<Timeline> readByCreateTime(DateTime dateTime) async {
+    List<Map<String, Object?>> list = await database.query(_tableName,
+        where: "$colCreateTime =  ? and $limitNotDel ",
+        whereArgs: [dateTime.millisecondsSinceEpoch]);
+    if (list.isNotEmpty) {
+      return Timeline.fromJson(list[0]) ;
+    }
+    return Timeline.create("").objNotExistAsT();
   }
 
   @override
-  Future<TimelineRespV2<TimelineLimitOneDay>> readOneDay(TimelineLimitOneDay limit) {
-    // TODO: implement readOneDay
-    throw UnimplementedError();
+  Future<TimelineRespV2<TimelineLimitOneDay>> readOneDay(TimelineLimitOneDay limit) async {
+    List<Map<String, dynamic>> query = await database.query(_tableName,
+        where:
+        "date(note_time / 1000, 'unixepoch', 'localtime') = ? and $limitNotDel ",
+        whereArgs: [
+          formatDate(limit.date, [yyyy, '-', mm, '-', dd])
+        ]);
+    return TimelineRespV2(limit, _convert(query));
   }
 
 
   @override
-  Future<bool> updateByDateTime(DateTime dateTime, String content) {
-    // TODO: implement updateByDateTime
-    throw UnimplementedError();
+  Future<bool> updateByDateTime(Timeline timeline) async {
+    timeline.modifyTime = DateTime.now();
+    var count = await database.update(_tableName,timeline.toJson(),
+        where: "$colCreateTime=  ? and $limitNotDel ",
+        whereArgs: [timeline.createTime.millisecondsSinceEpoch]);
+    return count > 0;
   }
 
 
   @override
-  Future<void> write(Timeline timeline) {
-    // TODO: implement write
-    throw UnimplementedError();
+  Future<bool> write(Timeline timeline) async {
+    timeline.createTime = DateTime.now();
+    timeline.modifyTime = DateTime.now();
+   int insertCount = await database.insert(_tableName,timeline.toJson());
+   return insertCount > 0;
+  }
+
+  Map<DateTime,Timeline> _convert(List<Map<String, dynamic>> rawFromDb) {
+    return rawFromDb.fold(SplayTreeMap<DateTime,Timeline>(), (previousValue, element) {
+      var timeline = Timeline.fromJson(element);
+      previousValue[timeline.createTime] = timeline;
+      return previousValue;
+    });
   }
 }

@@ -2,7 +2,9 @@
   Map<String,dynamic> toJson();
 }
 
-mixin BaseDbModel{
+mixin BaseDbModel<T>{
+  final String columnDelStatus = "delStatus";
+
   bool _exist = true;
 
   bool exist({bool? exist}){
@@ -10,5 +12,10 @@ mixin BaseDbModel{
       _exist = exist;
     }
     return _exist;
+  }
+
+  T objNotExistAsT(){
+    exist(exist: false);
+    return this as T;
   }
 }

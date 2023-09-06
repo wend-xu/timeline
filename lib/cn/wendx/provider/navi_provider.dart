@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
-import 'package:timeline/cn/wendx/config/logger_helper.dart';
 import 'package:timeline/cn/wendx/config/sys_constant.dart';
 import 'package:timeline/cn/wendx/model/navi_rail_dest_data.dart';
 import 'package:timeline/cn/wendx/model/sys_config.dart';
@@ -13,7 +12,6 @@ class NaviProvider extends ChangeNotifier {
       NaviRailDestData.create(Const.naviRefresh, Icons.refresh, "点击刷新数据",
           destinationSelected: (index, buildContext) {
     Provider.of<NaviProvider>(buildContext, listen: false).doLoading();
-
   });
 
   final NaviRailDestData _nothingDestData = NaviRailDestData.create(
@@ -52,7 +50,8 @@ class NaviProvider extends ChangeNotifier {
       _naviRailDestDataList =
           navDataList.isNotEmpty ? navDataList : _refreshList;
       if (navDataList.isEmpty) {
-        SmartDialog.showNotify(msg: "加载导航数据为空 \n可点击左侧按钮重试", notifyType: NotifyType.error);
+        SmartDialog.showNotify(
+            msg: "加载导航数据为空 \n可点击左侧按钮重试", notifyType: NotifyType.error);
       }
       notifyListeners();
     });

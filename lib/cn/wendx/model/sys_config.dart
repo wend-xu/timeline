@@ -10,7 +10,7 @@ part 'sys_config.g.dart';
 
 @JsonSerializable()
 @DateTimeEpochConverter()
-class SysConfig with BaseJsonModel<SysConfig>, BaseDbModel {
+class SysConfig with BaseJsonModel<SysConfig>, BaseDbModel<SysConfig> {
   int id;
   String key;
   String value;

@@ -38,13 +38,13 @@ class HiTimelineRepositoryImpl extends HiTimelineRepository
   }
 
   @override
-  Future<List<HiTimeline>> readHistory(int tId) {
-    // TODO: implement readHistory
-    throw UnimplementedError();
+  Future<List<HiTimeline>> readHistory(int tId) async {
+    List<Map<String,dynamic>> query = await database.query(_tableName,where: " tId = ? ",whereArgs: [tId]);
+    return query.map((e) => HiTimeline.fromJson(e)).toList();
   }
 
   @override
-  void write(Timeline) {
-    // TODO: implement write
+  Future<void> write(Timeline timeline) async {
+    database.insert(_tableName, HiTimeline.fromTimeline(timeline).toJson());
   }
 }

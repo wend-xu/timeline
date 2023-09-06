@@ -1,38 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:timeline/cn/wendx/model/timeline.dart';
 
+/// 拆分为三个widget实现
+/// item 展示时间 修改次数， 双击事件可以不在这里实现
 class TimelineItem extends StatelessWidget{
+  Timeline item;
+
+
+  TimelineItem(this.item);
 
   @override
   Widget build(BuildContext context) {
-
-    return Text("fuck");
-    // return Container(
-    //       padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
-    //       child: Column(
-    //         children: [
-    //           Align(
-    //             alignment: Alignment.centerLeft,
-    //             child: Row(
-    //               children: [
-    //                 Text("${item.noteTime.toString()}"),
-    //                 Spacer(),
-    //                 Text("#${index + 1}")
-    //               ],
-    //             ),
-    //           ),
-    //           SizedBox(
-    //             height: 10,
-    //           ),
-    //           Align(
-    //             alignment: Alignment.centerLeft,
-    //             child: SelectableText(item.content),
-    //           ),
-    //           Divider(
-    //             height: 10,
-    //           ),
-    //         ],
-    //       ),
-    //     );
+    return Container(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Row(
+              children: [
+                Text(item.createTime.toString()),
+                const Spacer(),
+                Text("版本:${item.version}")
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: SelectableText(item.contentRich),
+          ),
+          const Divider(
+            height: 10,
+          ),
+        ],
+      ),
+    );
   }
-
 }

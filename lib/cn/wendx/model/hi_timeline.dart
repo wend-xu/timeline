@@ -1,5 +1,8 @@
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:timeline/cn/wendx/model/base_model.dart';
+import 'package:timeline/cn/wendx/model/timeline.dart';
+import 'package:timeline/cn/wendx/util/id_generator.dart';
 
 import '../config/json_converter.dart';
 
@@ -8,7 +11,7 @@ part 'hi_timeline.g.dart';
 
 @JsonSerializable()
 @DateTimeEpochConverter()
-class HiTimeline with BaseDbModel{
+class HiTimeline with BaseDbModel<HiTimeline>,BaseJsonModel{
   int id;
 
   int tId;
@@ -26,6 +29,17 @@ class HiTimeline with BaseDbModel{
   int version;
 
   int delStatus;
+
+  factory HiTimeline.fromTimeline(Timeline timeline){
+    HiTimeline hiTimeline = _$HiTimelineFromJson(timeline.toJson());
+    hiTimeline.tId = timeline.id;
+    hiTimeline.id = IdGen.id();
+    return hiTimeline;
+  }
+
+  factory HiTimeline.fromJson(Map<String,dynamic> json){
+    return _$HiTimelineFromJson(json);
+  }
 
   HiTimeline({
     required this.id,
@@ -61,5 +75,10 @@ class HiTimeline with BaseDbModel{
       version: version ?? this.version,
       delStatus: delStatus ?? this.delStatus,
     );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$HiTimelineToJson(this);
   }
 }

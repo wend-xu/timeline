@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class FuncAreaProvider extends ChangeNotifier{
-  String _indexKey;
+  String _naviKey;
 
-  FuncAreaProvider(this._indexKey);
+  FuncAreaProvider(this._naviKey);
 
-  void doNavi(String indexKey){
-    _indexKey = indexKey;
+  void doNavi(String naviKey){
+    _naviKey = naviKey;
     notifyListeners();
   }
 
-  String get indexKey => _indexKey;
+  String get naviKey => _naviKey;
 }

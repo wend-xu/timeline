@@ -88,12 +88,12 @@ class TestPage extends StatelessWidget {
   Widget exploer(BuildContext context) {
     return FuncAreaWidget([
       FuncAreaContWrapper(
-          indexKey: "key1",
+          naviKey: "key1",
           builder: (buildConext) {
             return Text("key1");
           }),
       FuncAreaContWrapper(
-          indexKey: "key9999",
+          naviKey: "key9999",
           builder: (buildConext) {
             return Text("key9999");
           })

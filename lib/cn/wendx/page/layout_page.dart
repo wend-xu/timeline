@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:timeline/cn/wendx/component/cont_area.dart';
 import 'package:timeline/cn/wendx/component/desktop_navigation.dart';
 import 'package:timeline/cn/wendx/component/function_area.dart';
 import 'package:timeline/cn/wendx/config/sys_constant.dart';
 import 'package:timeline/cn/wendx/page/test_page.dart';
+import 'package:timeline/cn/wendx/page/timeline/timeline_cont_page.dart';
 import 'package:timeline/cn/wendx/page/timeline/timeline_func_area.dart';
 import 'package:timeline/cn/wendx/provider/func_area_provider.dart';
 import 'package:timeline/cn/wendx/provider/navi_provider.dart';
@@ -43,12 +45,12 @@ class LayoutPage extends StatelessWidget {
   Widget _funcAreaBuilder(BuildContext buildContext) {
     return FuncAreaWidget([
       FuncAreaContWrapper(
-          indexKey: Const.naviTimeline,
+          naviKey: Const.naviTimeline,
           builder: (buildContext) {
             return TimelineFuncArea();
           }),
       FuncAreaContWrapper(
-          indexKey: Const.naviSetting,
+          naviKey: Const.naviSetting,
           builder: (buildContext) {
             return const Text(Const.naviSetting);
           })
@@ -56,7 +58,14 @@ class LayoutPage extends StatelessWidget {
   }
 
   Widget _contentAreaBuilder(BuildContext buildContext) {
-    return TestContentWidget();
+    return ContAreaWidget([
+      ContAreaContWrapper(
+        naviKey: Const.contTimelineIndex,
+        builder: (BuildContext buildContext,Map<String,dynamic>? naviParam){
+          return TimelineContPage();
+        },
+      )
+    ]);
   }
 
   Widget _tipBarBuilder(BuildContext buildContext) {

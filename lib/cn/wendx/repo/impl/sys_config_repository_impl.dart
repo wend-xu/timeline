@@ -57,7 +57,7 @@ class SysConfigRepositoryImpl extends SysConfigRepository
       db.insert(
           _tableName,
           SysConfig.createWithMapValue(
-                  Const.winSize, {Const.width: 800.00, Const.height: 600.00},
+                  Const.winSize, {Const.width: 1080.00, Const.height: 800.00},
                   description: "窗口默认尺寸")
               .toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
@@ -141,7 +141,7 @@ class SysConfigRepositoryImpl extends SysConfigRepository
     if (query.isNotEmpty) {
       return SysConfig.formJson(query[0]);
     }
-    return SysConfig.notExist(key);
+    return SysConfig.create(key,key).objNotExistAsT();
   }
 
   @override

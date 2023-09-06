@@ -33,14 +33,14 @@ class FuncAreaWidget extends StatelessWidget {
 
   FuncAreaWidget(this.contentList,
       {super.key, WidgetBuilder? undefinedBuilder}) {
-    contentMap = {for (var el in contentList) el.indexKey: el};
+    contentMap = {for (var el in contentList) el.naviKey: el};
     _undefinedBuilder = undefinedBuilder ?? defaultBuilder;
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<FuncAreaProvider>(builder: (_, funcArea, child) {
-      return funcAreaBgWrapper(context, contentMap[funcArea.indexKey]);
+      return funcAreaBgWrapper(context, contentMap[funcArea.naviKey]);
     });
   }
 
@@ -62,18 +62,18 @@ class FuncAreaWidget extends StatelessWidget {
 }
 
 class FuncAreaContWrapper extends StatelessWidget {
-  final String indexKey;
+  final String naviKey;
 
   WidgetBuilder builder;
 
   FuncAreaContWrapper({
     super.key,
-    required this.indexKey,
+    required this.naviKey,
     required this.builder,
   });
 
   @override
   Widget build(BuildContext context) {
-    return build(context);
+    return const Text("只是个包装器不会被挂到widget树");
   }
 }

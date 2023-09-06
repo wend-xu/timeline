@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:timeline/cn/wendx/config/hotkey_config.dart';
 import 'package:timeline/cn/wendx/config/service_config.dart';
 import 'package:timeline/cn/wendx/config/windows_manager_config.dart';
+import 'package:timeline/cn/wendx/provider/cont_area_provider.dart';
 import 'package:timeline/cn/wendx/provider/func_area_provider.dart';
 import 'package:timeline/cn/wendx/provider/navi_provider.dart';
 import 'package:timeline/cn/wendx/provider/theme_provider.dart';
@@ -63,7 +64,9 @@ class MyApp extends StatelessWidget {
             create: (_) => ThemeProvider(themeData)),
         ChangeNotifierProvider<FuncAreaProvider>(
             create: (_) => FuncAreaProvider(Const.naviTimeline)),
-        ChangeNotifierProvider<NaviProvider>(create: (_) => NaviProvider())
+        ChangeNotifierProvider<NaviProvider>(create: (_) => NaviProvider()),
+        // todo 此处放入初始化应该跟FuncAreaProvider有关联的
+        ChangeNotifierProvider<ContAreaProvider>(create: (_) => ContAreaProvider(Const.contTimelineIndex))
       ],
       builder: (context, child) {
         return _materialProviderWrapper(context);

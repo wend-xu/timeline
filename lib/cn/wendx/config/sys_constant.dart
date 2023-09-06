@@ -45,6 +45,8 @@ class SystemConstant {
 
   static const String naviTimeline = "naviTimeline";
 
+  static const String contTimelineIndex = "naviTimelineIndex";
+
   static const String naviSetting = "naviSetting ";
 
   static const String naviLoading = "naviLoading";

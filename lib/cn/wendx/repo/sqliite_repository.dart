@@ -1,6 +1,7 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:timeline/cn/wendx/config/app_info.dart';
 import 'package:timeline/cn/wendx/config/logger_helper.dart';
+import 'package:timeline/cn/wendx/config/sys_constant.dart';
 
 /// [OnVersionSqlScriptFn] : 当 sqlite数据库发生变更时触发的会调方法
 ///   如当前应用 数据库版本为 9
@@ -20,7 +21,7 @@ typedef OnVersionSqlScriptFn = Function(
 
 OnVersionSqlScriptFn doNothingOnVersionSqlScriptFn =
     (Database db, int oldVersion, int newVersion) =>
-    StaticLogger.i("当前版本 $newVersion , 旧版本： ${oldVersion} ,将不执行任何操作");
+    StaticLogger.i("当前版本 $newVersion , 旧版本： $oldVersion ,将不执行任何操作");
 
 /// 用于注册保存不同版本的ddl语句
 class OnVersionSqlScriptHolder {
@@ -113,6 +114,13 @@ mixin SqliteRepository {
   }
 
   Database get database => _db;
+
+  String get colId => "id";
+  String get colDelStatus => "delStatus";
+  String get colCreateTime  => "createTime";
+  String get colModifyTime => "modifyTime";
+  String get colTotal  => "total";
+  String get limitNotDel => " $colDelStatus = ${Const.notDel} ";
 }
 
 
