@@ -5,8 +5,10 @@ import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:timeline/cn/wendx/config/app_info.dart';
 import 'package:timeline/cn/wendx/config/get_it_helper.dart';
+import 'package:timeline/cn/wendx/repo/impl/hi_timeline_repository_impl.dart';
 import 'package:timeline/cn/wendx/repo/impl/sqlite_timeline_repository.dart';
 import 'package:timeline/cn/wendx/repo/impl/sys_config_repository_impl.dart';
+import 'package:timeline/cn/wendx/repo/impl/timeline_repository_v2_impl.dart';
 import 'package:timeline/cn/wendx/repo/sqliite_repository.dart';
 
 Future openSqliteAndRegisterRepository() async {
@@ -17,8 +19,8 @@ Future openSqliteAndRegisterRepository() async {
     databaseFactory = databaseFactoryFfi;
   }
 
-  var sqliteInitHelper =
-      SqliteRepositoryInitHelper([SqliteTimelineRepository(), SysConfigRepositoryImpl()]);
+  var sqliteInitHelper = SqliteRepositoryInitHelper(
+      [SqliteTimelineRepository(), SysConfigRepositoryImpl(), TimelineRepositoryV2Impl(), HiTimelineRepositoryImpl()]);
 
   var databasesPath = await getDatabasesPath();
   logger.i("数据库文件路径$databasesPath");
@@ -35,9 +37,7 @@ Future openSqliteAndRegisterRepository() async {
   logger.i("初始化完成");
 }
 
-
-
-class SqliteRepositoryInitHelper with IocRegisterHelper{
+class SqliteRepositoryInitHelper with IocRegisterHelper {
   final Logger _l = Logger();
 
   final List<SqliteRepository> _sqliteRepositoryList;
@@ -59,7 +59,7 @@ class SqliteRepositoryInitHelper with IocRegisterHelper{
               sqliteRepository.sqlScriptUpgradeOnVersion(currentVersion);
           sqlScript(db, version, version);
           _l.i(
-              "执行sql 脚本，sqliteRepository：[${sqliteRepository.runtimeType.toString()}] 在 version $currentVersion 执行成功");
+              "执行sql 脚本，sqliteRepository：[${sqliteRepository.runtimeType.toString()}] 在 version $currentVersion 执行成功;");
         }
         _l.i(
             "数据库已完成版本 $currentVersion 初始化，最新版本: $version 是否已完成 ${currentVersion == version}");
@@ -81,7 +81,7 @@ class SqliteRepositoryInitHelper with IocRegisterHelper{
               sqliteRepository.sqlScriptUpgradeOnVersion(currentVersion);
           sqlScript(db, oldVersion, newVersion);
           _l.i(
-              "执行sql 脚本，sqliteRepository：[${sqliteRepository.runtimeType.toString()}] 在 version $currentVersion 执行成功");
+              "执行sql 脚本，sqliteRepository：[${sqliteRepository.runtimeType.toString()}] 在 version $currentVersion 执行成功;");
         }
         _l.i(
             "数据库已完成版本 $currentVersion 初始化，最新版本: $newVersion 是否已完成 ${currentVersion == newVersion}");
@@ -101,6 +101,5 @@ class SqliteRepositoryInitHelper with IocRegisterHelper{
   }
 
   @override
-  List registerList()  => _sqliteRepositoryList;
-
+  List registerList() => _sqliteRepositoryList;
 }

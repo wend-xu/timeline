@@ -24,9 +24,9 @@ class HiTimelineRepositoryImpl extends HiTimelineRepository
       db.execute('''
  CREATE TABLE $_tableName (	
 	id INTEGER PRIMARY KEY,
-	tId INTEGER PRIMARY KEY,
+	tId INTEGER ,
 	createTime DATETIME,
-	modifyTime DATETIME default CURRENT_TIMESTAMP,
+	modifyTime DATETIME default (strftime('%s','now')*1000),
 	contentRich Text Default "",
 	contentText Text Default "",
 	contentNormalize Text Default "",

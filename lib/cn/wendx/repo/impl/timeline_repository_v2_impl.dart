@@ -23,7 +23,7 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
  CREATE TABLE $_tableName (	
 	$colId INTEGER PRIMARY KEY,
 	$colCreateTime DATETIME,
-	$colModifyTime DATETIME default CURRENT_TIMESTAMP,
+	$colModifyTime DATETIME default (strftime('%s','now')*1000),
 	contentRich Text Default "",
 	contentText Text Default "",
 	contentNormalize Text Default "",
@@ -150,11 +150,19 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
    return insertCount > 0;
   }
 
-  Map<DateTime,Timeline> _convert(List<Map<String, dynamic>> rawFromDb) {
-    return rawFromDb.fold(SplayTreeMap<DateTime,Timeline>(), (previousValue, element) {
-      var timeline = Timeline.fromJson(element);
-      previousValue[timeline.createTime] = timeline;
-      return previousValue;
-    });
+  List<Timeline> _convert(List<Map<String, dynamic>> rawFromDb){
+      return rawFromDb.fold( [] , (previousValue, element) {
+        var timeline = Timeline.fromJson(element);
+        previousValue.add(timeline);
+        return previousValue;
+      });
   }
+
+  // Map<DateTime,Timeline> _convert(List<Map<String, dynamic>> rawFromDb) {
+  //   return rawFromDb.fold(SplayTreeMap<DateTime,Timeline>(), (previousValue, element) {
+  //     var timeline = Timeline.fromJson(element);
+  //     previousValue[timeline.createTime] = timeline;
+  //     return previousValue;
+  //   });
+  // }
 }

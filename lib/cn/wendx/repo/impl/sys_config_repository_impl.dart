@@ -35,7 +35,7 @@ class SysConfigRepositoryImpl extends SysConfigRepository
 	extras Text default "{}",
 	description Text default "",
 	createTime DATETIME,
-	modifyTime DATETIME default CURRENT_TIMESTAMP,
+	modifyTime DATETIME default (strftime('%s','now')*1000),
 	delStatus INT DEFAULT 0
 );
       ''');

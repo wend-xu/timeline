@@ -44,14 +44,18 @@ class ContAreaWidget extends StatelessWidget {
   Widget contAreaBgWrapper(BuildContext buildContext,
       ContAreaContWrapper? contWrapper, Map<String, dynamic>? paramMap) {
     NaviBuilder naviBuilder = contWrapper?.builder ?? _undefinedBuilder;
+    Widget cont = (contWrapper?.defaultBg ?? true)
+        ? Card(
+            color: Theme.of(buildContext).colorScheme.background,
+            child: naviBuilder(buildContext, paramMap),
+          )
+        : naviBuilder(buildContext, paramMap);
+
     return Container(
       width: double.infinity,
       height: double.infinity,
       padding: const EdgeInsets.only(right: 5, top: 5),
-      child: Card(
-        color: Theme.of(buildContext).colorScheme.background,
-        child: naviBuilder(buildContext,paramMap),
-      ),
+      child:cont
     );
   }
 }
@@ -61,11 +65,13 @@ class ContAreaContWrapper extends StatelessWidget {
 
   String naviKey;
 
-  ContAreaContWrapper({
-    super.key,
-    required this.builder,
-    required this.naviKey,
-  });
+  bool defaultBg;
+
+  ContAreaContWrapper(
+      {super.key,
+      required this.builder,
+      required this.naviKey,
+      this.defaultBg = true});
 
   @override
   Widget build(BuildContext context) {

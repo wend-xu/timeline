@@ -66,7 +66,8 @@ class TimelineResp<T extends TimelineLimit> {
 class TimelineRespV2<T extends TimelineLimit> {
   T limit;
 
-  Map<DateTime,Timeline> data;
+  // Map<DateTime,Timeline> data;
+  List<Timeline> data;
 
   bool resultEmpty;
 
@@ -78,6 +79,6 @@ class TimelineRespV2<T extends TimelineLimit> {
 
   TimelineRespV2.emptyR(this.limit, {String? message})
       : resultEmpty = true,
-        data = {},
+        data = [],
         msg = message ?? "";
 }

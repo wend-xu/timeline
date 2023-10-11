@@ -2,8 +2,9 @@
 
 import 'package:timeline/cn/wendx/model/timeline.dart';
 import 'package:timeline/cn/wendx/model/timeline_search.dart';
+import 'package:timeline/cn/wendx/service/base_service.dart';
 
-abstract class TimelineService{
+abstract class TimelineService extends BaseService{
   Future<void> write(Timeline timeline);
 
   /// read one day date,must set a day which want filter

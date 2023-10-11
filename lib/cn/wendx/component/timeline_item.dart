@@ -21,7 +21,7 @@ class TimelineItem extends StatelessWidget{
               children: [
                 Text(item.createTime.toString()),
                 const Spacer(),
-                Text("版本:${item.version}")
+                Text("编辑:${item.version}")
               ],
             ),
           ),

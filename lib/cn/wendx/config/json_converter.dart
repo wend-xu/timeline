@@ -1,13 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:timeline/cn/wendx/util/date_utils.dart';
 
 /// 时间戳格式转换
 class DateTimeEpochConverter implements JsonConverter<DateTime, int> {
   const DateTimeEpochConverter();
 
   @override
-  DateTime fromJson(int json) => DateTime.fromMillisecondsSinceEpoch(json);
+  DateTime fromJson(int json) => DateTime.fromMillisecondsSinceEpoch(timestamp_is_second(json)?timestamp_second_to_milli(json):json);
 
   @override
   int toJson(DateTime object) => object.millisecondsSinceEpoch;

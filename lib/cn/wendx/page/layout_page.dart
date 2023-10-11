@@ -60,6 +60,7 @@ class LayoutPage extends StatelessWidget {
   Widget _contentAreaBuilder(BuildContext buildContext) {
     return ContAreaWidget([
       ContAreaContWrapper(
+        defaultBg: false,
         naviKey: Const.contTimelineIndex,
         builder: (BuildContext buildContext,Map<String,dynamic>? naviParam){
           return TimelineContPage();
