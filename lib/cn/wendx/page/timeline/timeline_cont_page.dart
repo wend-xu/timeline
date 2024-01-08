@@ -1,7 +1,9 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get_it/get_it.dart';
 import 'package:timeline/cn/wendx/component/refresh_list_view_v3.dart';
+import 'package:timeline/cn/wendx/component/timeline_input.dart';
 import 'package:timeline/cn/wendx/component/timeline_item.dart';
 import 'package:timeline/cn/wendx/model/timeline.dart';
 import 'package:timeline/cn/wendx/model/timeline_search.dart';
@@ -10,8 +12,13 @@ import 'package:timeline/cn/wendx/service/timeline_service.dart';
 class TimelineContPage extends StatelessWidget {
   late TimelineService timelineService;
 
-  TimelineContPage({super.key}) {
+  late RefreshListViewController<Timeline> listController;
+
+  TimelineContPage({
+    super.key,
+  }) {
     timelineService = GetIt.instance.get<TimelineService>();
+    listController = RefreshListViewController();
   }
 
   @override
@@ -25,7 +32,7 @@ class TimelineContPage extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 50,
+          height: 80,
           child: Card(
             child: inputArea(),
             color: Theme.of(context).colorScheme.background,
@@ -36,26 +43,35 @@ class TimelineContPage extends StatelessWidget {
   }
 
   Widget contArea(BuildContext context) {
-    Timeline timeline =
-        Timeline.create("所以说我现在要改这个页面，两个block，一个是输入一个是展示，输入是在下面的");
+    return RefreshListViewV3<Timeline>(
+        controller: listController,
+        itemBuilder: (Timeline tl, int index) {
+          return TimelineItem(tl);
+        },
+        itemLoader: (int offset, int limit) async {
+          TimelineRespV2<TimelineLimitSearch> timelineRespV2 =
+              await timelineService
+                  .read(TimelineLimitSearch(limit: limit, offset: offset));
+          return LoadResp<Timeline>(
+              offset: timelineRespV2.limit.offset,
+              limit: timelineRespV2.limit.limit,
+              total: timelineRespV2.limit.total,
+              dataList: timelineRespV2.data);
+        });
+  }
 
-    return RefreshListViewV3<Timeline>(itemBuilder: (Timeline tl, int index) {
-      return TimelineItem(tl);
-    }, itemLoader: (int offset, int limit) async {
-      TimelineRespV2<TimelineLimitSearch> timelineRespV2 = await timelineService
-          .read(TimelineLimitSearch(limit: limit, offset: offset));
-      return LoadResp<Timeline>(
-          offset: timelineRespV2.limit.offset,
-          limit: timelineRespV2.limit.limit,
-          total: timelineRespV2.limit.total,
-          dataList: timelineRespV2.data);
+  void whenSubmit(String text, DateTime submitTime) {
+    SmartDialog.showLoading(msg: "写入中");
+    var timeline = Timeline.create(text, createTime: submitTime);
+    timelineService.write(timeline).then((writeInDb) {
+      listController.send(writeInDb,refresh: true);
+      SmartDialog.dismiss();
     });
   }
 
   Widget inputArea() {
-    return SizedBox(
-      width: double.infinity,
-      child: Text(""),
-    ) ;
+    return TimelineInput(
+      submitListen: whenSubmit,
+    );
   }
 }

@@ -17,26 +17,31 @@ class TimelineLimitSearch implements TimelineLimit {
   int limit;
   int total;
 
+  bool isAsc;
+
   TimelineLimitSearch(
       {this.noteTimeLe,
       this.noteTimeGe,
       this.contentLike,
       offset,
       limit,
-      total})
+      total,
+      isAsc})
       : offset = offset ?? 0,
         limit = limit ?? 20,
-        total = total ?? 0;
+        total = total ?? 0,
+        isAsc = isAsc ??false;
 
   TimelineLimitSearch.flex(
-      {this.contentLike, List<DateTime?>? noteTimeRange, offset, limit, total})
+      {this.contentLike, List<DateTime?>? noteTimeRange, offset, limit, total, isAsc})
       : noteTimeLe =
             (noteTimeRange?.length ?? 0) > 0 ? noteTimeRange![0] : null,
         noteTimeGe =
             (noteTimeRange?.length ?? 0) > 1 ? noteTimeRange![1] : null,
         offset = offset ?? 0,
         limit = limit ?? 20,
-        total = total ?? 0;
+        total = total ?? 0,
+        isAsc = isAsc ?? true;
 
   bool isEmpty() {
     return noteTimeLe == null && noteTimeGe == null && contentLike == null;
@@ -61,7 +66,6 @@ class TimelineResp<T extends TimelineLimit> {
         data = {},
         msg = message ?? "";
 }
-
 
 class TimelineRespV2<T extends TimelineLimit> {
   T limit;

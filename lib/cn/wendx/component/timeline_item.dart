@@ -4,8 +4,7 @@ import 'package:timeline/cn/wendx/model/timeline.dart';
 /// 拆分为三个widget实现
 /// item 展示时间 修改次数， 双击事件可以不在这里实现
 class TimelineItem extends StatelessWidget{
-  Timeline item;
-
+  final Timeline item;
 
   TimelineItem(this.item);
 

@@ -55,7 +55,7 @@ class TimelineServiceImpl extends TimelineService
   }
 
   @override
-  Future<bool> update(Timeline timeline) async {
+  Future<Timeline> update(Timeline timeline) async {
     Timeline timelineInDB= await timelineRepository.readByCreateTime(timeline.createTime);
     if(timelineInDB.exist()){
       hiTimelineRepository.write(timelineInDB);
@@ -65,7 +65,7 @@ class TimelineServiceImpl extends TimelineService
   }
 
   @override
-  Future<void> write(Timeline timeline) {
+  Future<Timeline> write(Timeline timeline) {
     return timelineRepository.write(timeline);
   }
 

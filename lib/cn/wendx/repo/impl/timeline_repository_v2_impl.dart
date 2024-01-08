@@ -43,27 +43,23 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
   Future<int> count(TimelineLimitSearch search) async {
     String where = '''
     where $limitNotDel 
-      ${(search.contentLike == null || search.contentLike!.isEmpty)
-        ? ''
-        : 'and contentNormalize like "%${search.contentLike!}%"'}
-      ${search.noteTimeLe == null ? '' : 'and $colCreateTime >= "${search
-        .noteTimeLe!.millisecondsSinceEpoch}"'} 
-      ${search.noteTimeGe == null ? '' : 'and $colCreateTime <= "${search
-        .noteTimeGe!.millisecondsSinceEpoch}"'} 
+      ${(search.contentLike == null || search.contentLike!.isEmpty) ? '' : 'and contentNormalize like "%${search.contentLike!}%"'}
+      ${search.noteTimeLe == null ? '' : 'and $colCreateTime >= "${search.noteTimeLe!.millisecondsSinceEpoch}"'} 
+      ${search.noteTimeGe == null ? '' : 'and $colCreateTime <= "${search.noteTimeGe!.millisecondsSinceEpoch}"'} 
     ''';
 
     String countSql = '''
     select count(*) as ${Const.total} from $_tableName 
      $where 
     ''';
-    
+
     List<Map<String, dynamic>> countFromDb = await database.rawQuery(countSql);
     return countFromDb[0][Const.total] as int;
   }
 
   @override
   Future<bool> deleteByDateTime(DateTime dateTime) async {
-    var count = await database.update(_tableName, {colDelStatus :Const.del},
+    var count = await database.update(_tableName, {colDelStatus: Const.del},
         where: "$colCreateTime =  ? and $colDelStatus = ${Const.notDel}",
         whereArgs: [dateTime.millisecondsSinceEpoch]);
     return count >= 1;
@@ -81,23 +77,19 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
   }
 
   @override
-  Future<TimelineRespV2<TimelineLimitSearch>> read(TimelineLimitSearch search) async {
+  Future<TimelineRespV2<TimelineLimitSearch>> read(
+      TimelineLimitSearch search) async {
     String where = '''
     where $colDelStatus = ${Const.notDel} 
-      ${(search.contentLike == null || search.contentLike!.isEmpty)
-        ? ''
-        : 'and contentNormalize like "%${search.contentLike!}%"'}
-      ${search.noteTimeLe == null ? '' : 'and $colCreateTime >= "${search
-        .noteTimeLe!.millisecondsSinceEpoch}"'} 
-      ${search.noteTimeGe == null ? '' : 'and $colCreateTime <= "${search
-        .noteTimeGe!.millisecondsSinceEpoch}"'} 
+      ${(search.contentLike == null || search.contentLike!.isEmpty) ? '' : 'and contentNormalize like "%${search.contentLike!}%"'}
+      ${search.noteTimeLe == null ? '' : 'and $colCreateTime >= "${search.noteTimeLe!.millisecondsSinceEpoch}"'} 
+      ${search.noteTimeGe == null ? '' : 'and $colCreateTime <= "${search.noteTimeGe!.millisecondsSinceEpoch}"'} 
     ''';
 
     String sql = '''
     select * from $_tableName 
       $where 
-      order by $colCreateTime desc limit ${search.limit} offset ${search
-        .offset};
+      order by $colCreateTime ${search.isAsc?'asc':"desc"} limit ${search.limit} offset ${search.offset};
     ''';
 
     var total = await count(search);
@@ -105,7 +97,7 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
 
     _l.i("查询语句：\n $sql");
     List<Map<String, dynamic>> rawFromDb =
-    total > 0 ? await database.rawQuery(sql) : [];
+        total > 0 ? await database.rawQuery(sql) : [];
     return TimelineRespV2(search, _convert(rawFromDb));
   }
 
@@ -115,54 +107,53 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
         where: "$colCreateTime =  ? and $limitNotDel ",
         whereArgs: [dateTime.millisecondsSinceEpoch]);
     if (list.isNotEmpty) {
-      return Timeline.fromJson(list[0]) ;
+      return Timeline.fromJson(list[0]);
     }
     return Timeline.create("").objNotExistAsT();
   }
 
   @override
-  Future<TimelineRespV2<TimelineLimitOneDay>> readOneDay(TimelineLimitOneDay limit) async {
+  Future<TimelineRespV2<TimelineLimitOneDay>> readOneDay(
+      TimelineLimitOneDay limit) async {
     List<Map<String, dynamic>> query = await database.query(_tableName,
         where:
-        "date(note_time / 1000, 'unixepoch', 'localtime') = ? and $limitNotDel ",
+            "date(note_time / 1000, 'unixepoch', 'localtime') = ? and $limitNotDel ",
         whereArgs: [
           formatDate(limit.date, [yyyy, '-', mm, '-', dd])
         ]);
     return TimelineRespV2(limit, _convert(query));
   }
 
-
   @override
-  Future<bool> updateByDateTime(Timeline timeline) async {
+  Future<Timeline> updateByDateTime(Timeline timeline) async {
     timeline.modifyTime = DateTime.now();
-    var count = await database.update(_tableName,timeline.toJson(),
+    await database.update(_tableName, timeline.toJson(),
         where: "$colCreateTime=  ? and $limitNotDel ",
         whereArgs: [timeline.createTime.millisecondsSinceEpoch]);
-    return count > 0;
+    return readByCreateTime(timeline.createTime);
   }
-
 
   @override
-  Future<bool> write(Timeline timeline) async {
-    timeline.createTime = DateTime.now();
-    timeline.modifyTime = DateTime.now();
-   int insertCount = await database.insert(_tableName,timeline.toJson());
-   return insertCount > 0;
+  Future<Timeline> write(Timeline timeline) async {
+    timeline.createTime = timeline.createTime ?? DateTime.now();
+    timeline.modifyTime = timeline.modifyTime ?? DateTime.now();
+    int insertCount = await database.insert(_tableName, timeline.toJson());
+    return readByCreateTime(timeline.createTime);
   }
 
-  List<Timeline> _convert(List<Map<String, dynamic>> rawFromDb){
-      return rawFromDb.fold( [] , (previousValue, element) {
-        var timeline = Timeline.fromJson(element);
-        previousValue.add(timeline);
-        return previousValue;
-      });
+  List<Timeline> _convert(List<Map<String, dynamic>> rawFromDb) {
+    return rawFromDb.fold([], (previousValue, element) {
+      var timeline = Timeline.fromJson(element);
+      previousValue.add(timeline);
+      return previousValue;
+    });
   }
 
-  // Map<DateTime,Timeline> _convert(List<Map<String, dynamic>> rawFromDb) {
-  //   return rawFromDb.fold(SplayTreeMap<DateTime,Timeline>(), (previousValue, element) {
-  //     var timeline = Timeline.fromJson(element);
-  //     previousValue[timeline.createTime] = timeline;
-  //     return previousValue;
-  //   });
-  // }
+// Map<DateTime,Timeline> _convert(List<Map<String, dynamic>> rawFromDb) {
+//   return rawFromDb.fold(SplayTreeMap<DateTime,Timeline>(), (previousValue, element) {
+//     var timeline = Timeline.fromJson(element);
+//     previousValue[timeline.createTime] = timeline;
+//     return previousValue;
+//   });
+// }
 }

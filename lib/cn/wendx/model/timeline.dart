@@ -31,9 +31,9 @@ class Timeline
     return _$TimelineFromJson(json);
   }
 
-  factory Timeline.create(String contentText, {int? id, String? contentRich}){
+  factory Timeline.create(String contentText, {int? id, String? contentRich, DateTime? createTime}){
     return Timeline(id: id ?? IdGen.id(),
-        createTime: DateTime.now(),
+        createTime: createTime??DateTime.now(),
         modifyTime: DateTime.now(),
         contentRich: contentRich??contentText,
         contentText: contentText,
