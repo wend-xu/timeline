@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
+import 'package:timeline/cn/wendx/provider/hot_key/send_action_provider.dart';
 
 typedef InputSubmitListen = void Function(String input, DateTime date);
 
@@ -29,6 +33,8 @@ class TimelineInput extends StatefulWidget {
 }
 
 class TimelineInputState extends State<TimelineInput> {
+  static final Logger _log = Logger();
+
   late final TextEditingController _inputController;
 
   late final InputSubmitListen? _submitListen;
@@ -42,6 +48,13 @@ class TimelineInputState extends State<TimelineInput> {
     _inputController = widget._inputController;
     _submitListen = widget._submitListen;
     _changeListen = widget._changeListen;
+    Provider.of<SendActionProvider>(context,listen: false).register((sendEvent) {
+      if(SendEvent.send == sendEvent){
+        sendInputContent();
+      }else{
+        newLine();
+      }
+    });
   }
 
   @override
@@ -58,25 +71,29 @@ class TimelineInputState extends State<TimelineInput> {
                   autofocus: true,
                   focusNode: _focusNode,
                   controller: _inputController,
-                  maxLength: 4000,
-                  decoration: const InputDecoration(
-                    hintText: " Enter发送 todo:Shift+Enter进入多行输入",
+                  decoration: InputDecoration(
+                    hintText: " Enter发送 ,Shift+Enter换行",
                   ),
-                  textInputAction: TextInputAction.done,
-                  onSubmitted: (value) {
-                    sendInputContent();
-                  },
-                  onChanged: (value){
-                    if(_changeListen!= null){
-                      _changeListen!(value,DateTime.now());
-                    }
-                  } ,
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.none,
+                  maxLines: null,
                 ),
               )),
           // )
         ],
       ),
     );
+  }
+
+  void newLine() {
+    // 在TextField的controller中插入一个换行符
+    // _inputController.value = _inputController.value.copyWith(
+    //   text: _inputController.text + '\n',
+    //   selection:
+    //       TextSelection.collapsed(offset: _inputController.text.length + 1),
+    //   composing: TextRange.empty,
+    // );
+   //  _focusNode.requestFocus();
   }
 
   void sendInputContent() {

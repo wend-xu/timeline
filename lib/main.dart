@@ -10,6 +10,8 @@ import 'package:timeline/cn/wendx/config/service_config.dart';
 import 'package:timeline/cn/wendx/config/windows_manager_config.dart';
 import 'package:timeline/cn/wendx/provider/cont_area_provider.dart';
 import 'package:timeline/cn/wendx/provider/func_area_provider.dart';
+import 'package:timeline/cn/wendx/provider/hot_key/multiline_input_action_provider.dart';
+import 'package:timeline/cn/wendx/provider/hot_key/send_action_provider.dart';
 import 'package:timeline/cn/wendx/provider/navi_provider.dart';
 import 'package:timeline/cn/wendx/provider/theme_provider.dart';
 import 'package:timeline/cn/wendx/route/name_route_manager.dart';
@@ -66,7 +68,9 @@ class MyApp extends StatelessWidget {
             create: (_) => FuncAreaProvider(Const.naviTimeline)),
         ChangeNotifierProvider<NaviProvider>(create: (_) => NaviProvider()),
         // todo 此处放入初始化应该跟FuncAreaProvider有关联的
-        ChangeNotifierProvider<ContAreaProvider>(create: (_) => ContAreaProvider(Const.contTimelineIndex))
+        ChangeNotifierProvider<ContAreaProvider>(create: (_) => ContAreaProvider(Const.contTimelineIndex)),
+        ChangeNotifierProvider<MultilineInputActionProvider>(create: (_) => MultilineInputActionProvider()),
+        ChangeNotifierProvider<SendActionProvider>(create: (_) => SendActionProvider()),
       ],
       builder: (context, child) {
         return _materialProviderWrapper(context);
@@ -92,6 +96,8 @@ class MyApp extends StatelessWidget {
         routes: R.routes(),
         builder: FlutterSmartDialog.init(
           builder: (context, widget) {
+            // 初始化局内快捷键
+            hotkeyInitInApp(context);
             return Material(
               child: MediaQuery(
                 //设置文字大小不随系统设置改变
@@ -102,4 +108,5 @@ class MyApp extends StatelessWidget {
           },
         ));
   }
+
 }
