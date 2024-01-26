@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:timeline/cn/wendx/config/logger_helper.dart';
 import 'package:timeline/cn/wendx/config/sys_constant.dart';
 import 'package:timeline/cn/wendx/model/sys_config.dart';
-import 'package:timeline/cn/wendx/provider/hot_key/multiline_input_action_provider.dart';
 import 'package:timeline/cn/wendx/provider/hot_key/send_action_provider.dart';
 import 'package:timeline/cn/wendx/service/sys_config_service.dart';
 import 'package:window_manager/window_manager.dart';

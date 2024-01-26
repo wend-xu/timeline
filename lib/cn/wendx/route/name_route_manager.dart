@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:timeline/cn/wendx/page/easy_refresh_demo/paging_page.dart';
 import 'package:timeline/cn/wendx/page/layout_page.dart';
-import 'package:timeline/cn/wendx/page/easy_refresh_demo/page_view_page.dart';
+import 'package:timeline/cn/wendx/page/quill_demo.dart';
 import 'package:timeline/cn/wendx/page/test_page.dart';
-import 'package:timeline/cn/wendx/page/timeline_page.dart';
 import 'package:timeline/cn/wendx/page/timeline_search_page.dart';
 
-import '../page/easy_refresh_demo/nested_scroll_view.dart';
+// import '../page/quill_demo.dart';
+
 
 class R {
   static const String timeline = "timeline";
   static const String timelineSearch = "timeline_search";
   static const String testPage = "testPage";
   static const String layoutPage = "layoutPage ";
-  static const String testPage2 = "testPage2 ";
+  static const String quillDemo = "quillDemo";
 
   static final Map<String, WidgetBuilder> _routeMap = {
-    timeline: (context) => TimelinePage(),
+    // timeline: (context) => TimelinePage(),
     timelineSearch: (context) => TimelineSearchPage(),
     testPage: (context) => TestPage(),
     layoutPage: (context) => LayoutPage(),
-    testPage2: (context) =>NestedScrollViewPage(),
+    quillDemo: (context) =>QuillDemo(),
   };
 
   static Map<String, WidgetBuilder> routes() {

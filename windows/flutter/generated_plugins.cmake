@@ -3,9 +3,13 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  file_selector_windows
+  gal
   hotkey_manager
+  pasteboard
   screen_retriever
   tray_manager
+  url_launcher_windows
   window_manager
 )
 

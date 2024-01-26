@@ -3,20 +3,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:timeline/cn/wendx/config/hotkey_config.dart';
 import 'package:timeline/cn/wendx/config/service_config.dart';
 import 'package:timeline/cn/wendx/config/windows_manager_config.dart';
 import 'package:timeline/cn/wendx/provider/cont_area_provider.dart';
 import 'package:timeline/cn/wendx/provider/func_area_provider.dart';
-import 'package:timeline/cn/wendx/provider/hot_key/multiline_input_action_provider.dart';
 import 'package:timeline/cn/wendx/provider/hot_key/send_action_provider.dart';
+import 'package:timeline/cn/wendx/provider/input_state_provider.dart';
 import 'package:timeline/cn/wendx/provider/navi_provider.dart';
 import 'package:timeline/cn/wendx/provider/theme_provider.dart';
 import 'package:timeline/cn/wendx/route/name_route_manager.dart';
-import 'package:timeline/cn/wendx/util/id_generator.dart';
-import 'package:window_manager/window_manager.dart';
 
 import 'cn/wendx/config/repository_config.dart';
 import 'cn/wendx/config/sys_constant.dart';
@@ -53,7 +50,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var themeData = ThemeData(
-      primarySwatch: Colors.grey,
+      primarySwatch: Colors.blueGrey,
       inputDecorationTheme: const InputDecorationTheme(
         labelStyle: TextStyle(fontSize: 12),
         hintStyle: TextStyle(fontSize: 12)
@@ -69,8 +66,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<NaviProvider>(create: (_) => NaviProvider()),
         // todo 此处放入初始化应该跟FuncAreaProvider有关联的
         ChangeNotifierProvider<ContAreaProvider>(create: (_) => ContAreaProvider(Const.contTimelineIndex)),
-        ChangeNotifierProvider<MultilineInputActionProvider>(create: (_) => MultilineInputActionProvider()),
         ChangeNotifierProvider<SendActionProvider>(create: (_) => SendActionProvider()),
+        ChangeNotifierProvider<InputStateProvider>(create: (_) => InputStateProvider()),
       ],
       builder: (context, child) {
         return _materialProviderWrapper(context);
@@ -79,11 +76,6 @@ class MyApp extends StatelessWidget {
   }
 
   Widget _materialProviderWrapper(BuildContext buildContext) {
-    // return Consumer<ThemeProvider>(
-    //   builder: (_,theme,child){
-    //     return _material(theme);
-    //   }
-    // );
     return _material(buildContext);
   }
 
@@ -92,7 +84,7 @@ class MyApp extends StatelessWidget {
         title: 'Timeline',
         theme: Provider.of<ThemeProvider>(buildContext).themeData,
         navigatorObservers: [FlutterSmartDialog.observer],
-        initialRoute: R.layoutPage,
+        initialRoute: R.quillDemo,
         routes: R.routes(),
         builder: FlutterSmartDialog.init(
           builder: (context, widget) {

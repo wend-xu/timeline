@@ -13,11 +13,12 @@ class SystemConstant {
 
   static const Able disable = Able.disable;
 
-  static const DesktopNaviAreaWrapper desktopNaviArea = DesktopNaviAreaWrapper();
+  static const DesktopNaviAreaWrapper desktopNaviArea =
+      DesktopNaviAreaWrapper();
 
   static const String lang = "lang";
 
-  static const String winOnTop =  "winOnTop ";
+  static const String winOnTop = "winOnTop ";
 
   static const String winSize = "winSize";
 
@@ -59,31 +60,49 @@ class SystemConstant {
 }
 
 @JsonEnum(valueField: 'key')
-enum Able{
-  enable("enable"),disable("disable");
+enum Able {
+  enable("enable"),
+  disable("disable");
 
   final String key;
 
   const Able(this.key);
 
   /// 获取不到返回 [disable]
-  static Able get(String key){
+  static Able get(String key) {
     return Able.values.firstWhere((el) => el.key == key, orElse: () => disable);
   }
 }
 
 @JsonEnum()
-enum DesktopNaviArea{
+enum DesktopNaviArea {
   // leading
-  destination,trailing;
+  destination,
+  trailing;
 }
 
-class DesktopNaviAreaWrapper{
-   // final DesktopNaviArea leading = DesktopNaviArea.leading;
+class DesktopNaviAreaWrapper {
+  // final DesktopNaviArea leading = DesktopNaviArea.leading;
 
-   final DesktopNaviArea destination = DesktopNaviArea.destination;
+  final DesktopNaviArea destination = DesktopNaviArea.destination;
 
-   final DesktopNaviArea trailing  = DesktopNaviArea.trailing;
+  final DesktopNaviArea trailing = DesktopNaviArea.trailing;
 
-   const DesktopNaviAreaWrapper();
+  const DesktopNaviAreaWrapper();
+}
+
+enum SendEvent { send, newline }
+
+enum InputType {
+  normal("normal","标准");
+
+  final String key;
+  final String name;
+
+  const InputType(this.key,this.name);
+
+  /// 获取不到返回 [normal]
+  static InputType get(String key) {
+    return InputType.values.firstWhere((el) => el.key == key, orElse: () => normal);
+  }
 }

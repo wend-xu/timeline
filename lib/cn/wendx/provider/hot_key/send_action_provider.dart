@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:timeline/cn/wendx/config/sys_constant.dart';
 
 class SendActionProvider extends ChangeNotifier{
 
@@ -23,6 +24,6 @@ class SendActionProvider extends ChangeNotifier{
   }
 }
 
-enum SendEvent { send , newline }
+
 
 typedef SendActionCallBack = Function(SendEvent sendEvent);
