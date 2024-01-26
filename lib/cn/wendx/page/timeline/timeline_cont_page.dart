@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
-import 'package:timeline/cn/wendx/component/refresh_list_view_v3.dart';
+import 'package:timeline/cn/wendx/component/refresh_list_view.dart';
 import 'package:timeline/cn/wendx/component/timeline_input.dart';
 import 'package:timeline/cn/wendx/component/timeline_item.dart';
 import 'package:timeline/cn/wendx/model/timeline.dart';
@@ -49,7 +49,7 @@ class TimelineContPage extends StatelessWidget {
   }
 
   Widget contArea(BuildContext context) {
-    return RefreshListViewV3<Timeline>(
+    return RefreshListView<Timeline>(
         controller: listController,
         itemBuilder: (Timeline tl, int index) {
           return TimelineItem(tl);

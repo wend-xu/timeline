@@ -37,14 +37,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2 # ios风格图标
   timelines: ^0.1.0 #时间线
-#  sqflite: ^2.0.2+1 # 数据库
   sqflite: ^2.2.8+4 # 数据库
-#  sqflite_common_ffi: ^2.1.1 # 数据库
   sqflite_common_ffi: ^2.2.3 # 数据库
-#  path_provider: ^2.0.11 # 路径
+  path_provider: ^2.0.11 # 路径
   path: ^1.8.3 #路径
   date_format: ^2.0.7 # 时间格式化
-#  date_picker_timeline_fixed: ^2.0.0 # 顶部时间线，可以删了
   calendar_date_picker2: ^0.5.2 # 日历选择器
   window_manager: ^0.3.4 # 窗口管理
   tray_manager: ^0.2.0 # 托盘管理

@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
         title: 'Timeline',
         theme: Provider.of<ThemeProvider>(buildContext).themeData,
         navigatorObservers: [FlutterSmartDialog.observer],
-        initialRoute: R.quillDemo,
+        initialRoute: R.layoutPage,
         routes: R.routes(),
         builder: FlutterSmartDialog.init(
           builder: (context, widget) {

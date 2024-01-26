@@ -26,9 +26,9 @@ class LoadResp<T> {
 }
 
 class RefreshListViewController<T> {
-  RefreshListViewV3State<T>? refreshListViewV3State;
+  RefreshListViewState<T>? refreshListViewV3State;
 
-  void bind(RefreshListViewV3State<T> refreshListViewV3State) {
+  void bind(RefreshListViewState<T> refreshListViewV3State) {
     this.refreshListViewV3State = refreshListViewV3State;
   }
 
@@ -52,7 +52,7 @@ class RefreshListViewController<T> {
 /// EasyRefresh  提供的是触发 下拉加载 和 上滑刷新 的功能
 /// 数据的加载和维护还是得自行处理
 /// 不要用listView的builder方法，直接传入维护的数据
-class RefreshListViewV3<T> extends StatefulWidget {
+class RefreshListView<T> extends StatefulWidget {
   final RefreshListViewController<T>? _controller;
 
   final int _pullSize;
@@ -63,7 +63,7 @@ class RefreshListViewV3<T> extends StatefulWidget {
 
   final ItemLoader<T> _itemLoader;
 
-  RefreshListViewV3({
+  RefreshListView({
     RefreshListViewController<T>? controller,
     int? pullSize,
     int? initSize,
@@ -77,11 +77,11 @@ class RefreshListViewV3<T> extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return RefreshListViewV3State<T>();
+    return RefreshListViewState<T>();
   }
 }
 
-class RefreshListViewV3State<T> extends State<RefreshListViewV3<T>> {
+class RefreshListViewState<T> extends State<RefreshListView<T>> {
   static final Logger _log = Logger();
 
   /// 控制器

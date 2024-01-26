@@ -16,6 +16,9 @@ PODS:
     - HotKey
   - pasteboard (0.0.1):
     - FlutterMacOS
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - screen_retriever (0.0.1):
     - FlutterMacOS
   - sqflite (0.0.2):
@@ -38,6 +41,7 @@ DEPENDENCIES:
   - gal (from `Flutter/ephemeral/.symlinks/plugins/gal/darwin`)
   - hotkey_manager (from `Flutter/ephemeral/.symlinks/plugins/hotkey_manager/macos`)
   - pasteboard (from `Flutter/ephemeral/.symlinks/plugins/pasteboard/macos`)
+  - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
   - screen_retriever (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever/macos`)
   - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/macos`)
   - tray_manager (from `Flutter/ephemeral/.symlinks/plugins/tray_manager/macos`)
@@ -63,6 +67,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/hotkey_manager/macos
   pasteboard:
     :path: Flutter/ephemeral/.symlinks/plugins/pasteboard/macos
+  path_provider_foundation:
+    :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
   screen_retriever:
     :path: Flutter/ephemeral/.symlinks/plugins/screen_retriever/macos
   sqflite:
@@ -85,6 +91,7 @@ SPEC CHECKSUMS:
   HotKey: e96d8a2ddbf4591131e2bb3f54e69554d90cdca6
   hotkey_manager: c32bf0bfe8f934b7bc17ab4ad5c4c142960b023c
   pasteboard: 9b69dba6fedbb04866be632205d532fe2f6b1d99
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   screen_retriever: 59634572a57080243dd1bf715e55b6c54f241a38
   sqflite: a5789cceda41d54d23f31d6de539d65bb14100ea
   tray_manager: 9064e219c56d75c476e46b9a21182087930baf90
