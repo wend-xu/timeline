@@ -8,10 +8,10 @@ import 'package:timeline/cn/wendx/config/sys_constant.dart';
 import 'package:timeline/cn/wendx/model/timeline.dart';
 import 'package:timeline/cn/wendx/model/timeline_search.dart';
 import 'package:timeline/cn/wendx/repo/sqliite_repository.dart';
-import 'package:timeline/cn/wendx/repo/timeline_repository_v2.dart';
+import 'package:timeline/cn/wendx/repo/timeline_repository.dart';
 
-class TimelineRepositoryV2Impl extends TimelineRepositoryV2
-    with SqliteRepository, IocRegister<TimelineRepositoryV2> {
+class TimelineRepositoryImpl extends TimelineRepository
+    with SqliteRepository, IocRegister<TimelineRepository> {
   static const String _tableName = "timeline";
 
   final Logger _l = Logger();
@@ -35,8 +35,8 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
   }
 
   @override
-  void register(TimelineRepositoryV2 instance) {
-    GetIt.instance.registerSingleton<TimelineRepositoryV2>(instance);
+  void register(TimelineRepository instance) {
+    GetIt.instance.registerSingleton<TimelineRepository>(instance);
   }
 
   @override
@@ -77,7 +77,7 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
   }
 
   @override
-  Future<TimelineRespV2<TimelineLimitSearch>> read(
+  Future<TimelineResp<TimelineLimitSearch>> read(
       TimelineLimitSearch search) async {
     String where = '''
     where $colDelStatus = ${Const.notDel} 
@@ -98,7 +98,7 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
     _l.i("查询语句：\n $sql");
     List<Map<String, dynamic>> rawFromDb =
         total > 0 ? await database.rawQuery(sql) : [];
-    return TimelineRespV2(search, _convert(rawFromDb));
+    return TimelineResp(search, _convert(rawFromDb));
   }
 
   @override
@@ -113,7 +113,7 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
   }
 
   @override
-  Future<TimelineRespV2<TimelineLimitOneDay>> readOneDay(
+  Future<TimelineResp<TimelineLimitOneDay>> readOneDay(
       TimelineLimitOneDay limit) async {
     List<Map<String, dynamic>> query = await database.query(_tableName,
         where:
@@ -121,7 +121,7 @@ class TimelineRepositoryV2Impl extends TimelineRepositoryV2
         whereArgs: [
           formatDate(limit.date, [yyyy, '-', mm, '-', dd])
         ]);
-    return TimelineRespV2(limit, _convert(query));
+    return TimelineResp(limit, _convert(query));
   }
 
   @override

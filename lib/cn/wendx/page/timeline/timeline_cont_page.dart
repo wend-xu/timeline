@@ -61,7 +61,7 @@ class TimelineContPage extends StatelessWidget {
               return TimelineItem(tl);
             },
             itemLoader: (int offset, int limit) async {
-              TimelineRespV2<TimelineLimitSearch> timelineRespV2 =
+              TimelineResp<TimelineLimitSearch> timelineRespV2 =
                   await timelineService
                       .read(TimelineLimitSearch(limit: limit, offset: offset));
               return LoadResp<Timeline>(

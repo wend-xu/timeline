@@ -8,9 +8,9 @@ abstract class TimelineService extends BaseService{
   Future<Timeline> write(Timeline timeline);
 
   /// read one day date,must set a day which want filter
-  Future<TimelineRespV2<TimelineLimitOneDay>> readOneDay(TimelineLimitOneDay limit);
+  Future<TimelineResp<TimelineLimitOneDay>> readOneDay(TimelineLimitOneDay limit);
 
-  Future<TimelineRespV2<TimelineLimitSearch>> read(TimelineLimitSearch search);
+  Future<TimelineResp<TimelineLimitSearch>> read(TimelineLimitSearch search);
 
   Future<int> count(TimelineLimitSearch search);
 

@@ -6,9 +6,8 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:timeline/cn/wendx/config/app_info.dart';
 import 'package:timeline/cn/wendx/config/get_it_helper.dart';
 import 'package:timeline/cn/wendx/repo/impl/hi_timeline_repository_impl.dart';
-import 'package:timeline/cn/wendx/repo/impl/sqlite_timeline_repository.dart';
 import 'package:timeline/cn/wendx/repo/impl/sys_config_repository_impl.dart';
-import 'package:timeline/cn/wendx/repo/impl/timeline_repository_v2_impl.dart';
+import 'package:timeline/cn/wendx/repo/impl/timeline_repository_impl.dart';
 import 'package:timeline/cn/wendx/repo/sqliite_repository.dart';
 
 Future openSqliteAndRegisterRepository() async {
@@ -20,7 +19,7 @@ Future openSqliteAndRegisterRepository() async {
   }
 
   var sqliteInitHelper = SqliteRepositoryInitHelper(
-      [SqliteTimelineRepository(), SysConfigRepositoryImpl(), TimelineRepositoryV2Impl(), HiTimelineRepositoryImpl()]);
+      [ SysConfigRepositoryImpl(), TimelineRepositoryImpl(), HiTimelineRepositoryImpl()]);
 
   var databasesPath = await getDatabasesPath();
   logger.i("数据库文件路径$databasesPath");

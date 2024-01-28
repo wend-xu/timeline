@@ -51,7 +51,8 @@ class TimelineLimitSearch implements TimelineLimit {
 class TimelineResp<T extends TimelineLimit> {
   T limit;
 
-  Map<DateTime, String> data;
+  // Map<DateTime,Timeline> data;
+  List<Timeline> data;
 
   bool resultEmpty;
 
@@ -62,26 +63,6 @@ class TimelineResp<T extends TimelineLimit> {
         msg = message ?? "";
 
   TimelineResp.emptyR(this.limit, {String? message})
-      : resultEmpty = true,
-        data = {},
-        msg = message ?? "";
-}
-
-class TimelineRespV2<T extends TimelineLimit> {
-  T limit;
-
-  // Map<DateTime,Timeline> data;
-  List<Timeline> data;
-
-  bool resultEmpty;
-
-  String msg = "";
-
-  TimelineRespV2(this.limit, this.data, {String? message})
-      : resultEmpty = data.isEmpty,
-        msg = message ?? "";
-
-  TimelineRespV2.emptyR(this.limit, {String? message})
       : resultEmpty = true,
         data = [],
         msg = message ?? "";

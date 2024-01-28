@@ -3,12 +3,12 @@ import 'package:timeline/cn/wendx/config/get_it_helper.dart';
 import 'package:timeline/cn/wendx/model/timeline.dart';
 import 'package:timeline/cn/wendx/model/timeline_search.dart';
 import 'package:timeline/cn/wendx/repo/hi_timeline_repository.dart';
-import 'package:timeline/cn/wendx/repo/timeline_repository_v2.dart';
+import 'package:timeline/cn/wendx/repo/timeline_repository.dart';
 import 'package:timeline/cn/wendx/service/timeline_service.dart';
 
 class TimelineServiceImpl extends TimelineService
     with IocRegister<TimelineService> {
-  TimelineRepositoryV2 timelineRepository;
+  TimelineRepository timelineRepository;
 
   HiTimelineRepository hiTimelineRepository;
 
@@ -16,11 +16,11 @@ class TimelineServiceImpl extends TimelineService
 
   static Future<TimelineService> instanceAsync() async {
     var getIt = GetIt.instance;
-    TimelineRepositoryV2 timelineRepositoryV2 =
-        getIt.get<TimelineRepositoryV2>();
+    TimelineRepository timelineRepository =
+        getIt.get<TimelineRepository>();
     HiTimelineRepository hiTimelineRepository =
         getIt.get<HiTimelineRepository>();
-    return TimelineServiceImpl._(timelineRepositoryV2, hiTimelineRepository);
+    return TimelineServiceImpl._(timelineRepository, hiTimelineRepository);
   }
 
   @override
@@ -39,7 +39,7 @@ class TimelineServiceImpl extends TimelineService
   }
 
   @override
-  Future<TimelineRespV2<TimelineLimitSearch>> read(TimelineLimitSearch search) {
+  Future<TimelineResp<TimelineLimitSearch>> read(TimelineLimitSearch search) {
     return timelineRepository.read(search);
   }
 
@@ -49,7 +49,7 @@ class TimelineServiceImpl extends TimelineService
   }
 
   @override
-  Future<TimelineRespV2<TimelineLimitOneDay>> readOneDay(
+  Future<TimelineResp<TimelineLimitOneDay>> readOneDay(
       TimelineLimitOneDay limit) {
     return timelineRepository.readOneDay(limit);
   }
