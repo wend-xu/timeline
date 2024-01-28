@@ -1,49 +1,32 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:timeline/cn/wendx/config/sys_constant.dart';
-import 'package:timeline/cn/wendx/model/input_state.dart';
-import 'package:timeline/cn/wendx/provider/hot_key/send_action_provider.dart';
 import 'package:timeline/cn/wendx/provider/input_state_provider.dart';
 
-typedef InputSubmitListen = void Function(String input, DateTime date);
+typedef InputChangeListen = void Function(
+    String plainText, String richText, DateTime date);
 
-typedef InputChangeListen = void Function(String input, DateTime date);
-
-/// 暂时没办法让 TextField 不对输入做响应
-///
-/// 当前只是将 send 的动作交由 hotkeyManager 来触发
-/// 而 TextField 本身依旧在响应 enter
-///
-/// 即按下 shift+enter 对TextField 来说没有意义，响应的只是enter，没有shift，
-/// 只是这个enter不是 hotkeyManager触发的所以不会调用 send 的逻辑
-///
-/// 这种实现是有缺陷的，只是刚好实现了回车换行的效果
-/// 且在mac可用，windows上可能就变成了切换输入法了
 class TimelineInput extends StatefulWidget {
   static const String multiLineMode = "multiLineMode";
   static const String singleLineMode = "singleLineMode";
-
-  final TextEditingController _inputController;
-
-  final InputSubmitListen? _submitListen;
 
   final InputChangeListen? _changeListen;
 
   final String _mode;
 
+  final TimelineInputController? _controller;
+
   TimelineInput(
       {super.key,
-      InputSubmitListen? submitListen,
       InputChangeListen? changeListen,
-      TextEditingController? inputController,
+      TimelineInputController? inputController,
       String? mode})
-      : _submitListen = submitListen,
-        _inputController = inputController ?? TextEditingController(),
-        _changeListen = changeListen,
+      : _changeListen = changeListen,
+        _controller = inputController ?? TimelineInputController(),
         _mode = mode ?? singleLineMode;
 
   @override
@@ -55,11 +38,11 @@ class TimelineInput extends StatefulWidget {
 class TimelineInputState extends State<TimelineInput> {
   static final Logger _log = Logger();
 
-  late final TextEditingController _inputController;
-
-  late final InputSubmitListen? _submitListen;
-
   late final InputChangeListen? _changeListen;
+
+  late final QuillController _quillController;
+
+  late final TimelineInputController? _controller;
 
   late String _mode;
 
@@ -67,34 +50,17 @@ class TimelineInputState extends State<TimelineInput> {
 
   @override
   void initState() {
-    _inputController = widget._inputController;
-    _submitListen = widget._submitListen;
     _changeListen = widget._changeListen;
     _mode = widget._mode;
-
-    Provider.of<SendActionProvider>(context, listen: false)
-        .register((sendEvent) {
-      if (SendEvent.send == sendEvent) {
-        sendInputContent(context);
-      } else if (SendEvent.newline == sendEvent) {
-        /// do nothing,让他自己换行
-        newLine(context);
-      }
-    });
-
-    // 修改输入状态为当前组件的信息
-    Provider.of<InputStateProvider>(context, listen: false).change(InputState(
-      inputType: InputType.normal,
-      inputComp: "timeline/cn/wendx/component/timeline_input",
-      inputCompMode: _mode,
-    ));
+    _controller = widget._controller;
+    _controller?.bind(this);
+    _quillController = QuillController.basic();
   }
 
   @override
   Widget build(BuildContext context) {
-    var secondary = Theme.of(context).cardColor;
     return Container(
-      margin: const EdgeInsets.only(left: 15.0, right: 15, top: 5, bottom: 5),
+      margin: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
       child: Row(
         children: [
           Expanded(
@@ -105,19 +71,7 @@ class TimelineInputState extends State<TimelineInput> {
                     builder: (_, inputStateProvider, child) {
                       var inputCompState =
                           inputStateProvider.inputState.inputCompMode;
-                      return TextField(
-                        autofocus: true,
-                        focusNode: _focusNode,
-                        controller: _inputController,
-                        decoration: InputDecoration(
-                          hintText: " Enter发送 ,Shift+Enter换行",
-                        ),
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.newline,
-                        maxLines: TimelineInput.singleLineMode == inputCompState
-                            ? 1
-                            : 10,
-                      );
+                      return _inputUseQuill(_quillController, inputCompState);
                     },
                   ))),
         ],
@@ -125,35 +79,114 @@ class TimelineInputState extends State<TimelineInput> {
     );
   }
 
-  void sendInputContent(BuildContext context) {
-    var text = _inputController.text;
-    if (text.isEmpty || text == "\n") {
-      SmartDialog.showToast("未输入内容");
-      return;
+  QuillProvider _inputUseQuill(QuillController controller, String state) {
+    const QuillToolbarConfigurations toolbarConfigurations =
+        QuillToolbarConfigurations(
+            toolbarIconAlignment: WrapAlignment.start,
+            toolbarIconCrossAlignment: WrapCrossAlignment.start,
+            showFontFamily: false,
+            showFontSize: false,
+            showHeaderStyle: false,
+            showIndent: false,
+            showDirection: false,
+            showSearchButton: false,
+            showSubscript: false,
+            showSuperscript: false,
+            showUndo: false,
+            showRedo: false);
+
+    const QuillEditorConfigurations editorConfigurations =
+        QuillEditorConfigurations(
+      readOnly: false,
+    );
+
+    List<Widget> inputWidget = [];
+    if (TimelineInput.multiLineMode == state) {
+      var quillToolbar = const QuillToolbar(
+        configurations: toolbarConfigurations,
+      );
+      inputWidget.add(quillToolbar);
     }
-    if (_submitListen != null) {
-      _submitListen!(_inputController.text, DateTime.now());
-    }
-    _inputController.clear();
-    _changeMode(context, TimelineInput.singleLineMode);
-    _focusNode.requestFocus();
+
+    var editor = Expanded(
+      child: QuillEditor.basic(
+        configurations: editorConfigurations,
+        focusNode: _focusNode,
+      ),
+    );
+    inputWidget.add(editor);
+
+    return QuillProvider(
+      configurations: QuillConfigurations(
+        controller: controller,
+        sharedConfigurations: const QuillSharedConfigurations(
+          locale: Locale('zh'),
+        ),
+      ),
+      child: Column(children: inputWidget),
+    );
+  }
+}
+
+class TimelineInputController {
+  TimelineInputState? _state;
+
+  void bind(TimelineInputState timelineInputState) {
+    _state = timelineInputState;
   }
 
-  void newLine(BuildContext context) {
-    if (_changeMode(context, TimelineInput.multiLineMode)) {
-      _inputController.text = "${_inputController.text}\n";
-    }
-    _focusNode.requestFocus();
+  void focus(){
+    hasBind();
+    _state!._focusNode.requestFocus();
   }
 
-  bool _changeMode(BuildContext context, String mode) {
-    var inputStateProvider =
-        Provider.of<InputStateProvider>(context, listen: false);
-    var inputState = inputStateProvider.inputState;
-    if (inputState.inputCompMode != mode) {
-      inputStateProvider.change(inputState.copyWith(inputCompMode: mode));
-      return true;
+  void unfocus(){
+    hasBind();
+    _state!._focusNode.unfocus();
+  }
+
+  void newline() {}
+
+  bool isEmpty() {
+    hasBind();
+    return _state!._quillController.document.isEmpty();
+  }
+
+  String getPlainText() {
+    hasBind();
+    return _state!._quillController.document.toPlainText();
+  }
+
+  String getRichText() {
+    hasBind();
+    return jsonEncode(_state!._quillController.document.toDelta().toJson());
+  }
+
+  void registerChangeLister() {}
+
+  void doClear() {
+    hasBind();
+    _state!._quillController.clear();
+  }
+
+  void singleLineMode() {
+    _changeMode(TimelineInput.singleLineMode);
+  }
+
+  void multiLineMode() {
+    _changeMode(TimelineInput.multiLineMode);
+  }
+
+  void _changeMode(String mode) {
+    hasBind();
+    _state!.setState(() {
+      _state!._mode = mode;
+    });
+  }
+
+  void hasBind() {
+    if (_state == null) {
+      throw Exception("TimelineInputController 未绑定至 TimelineState");
     }
-    return false;
   }
 }

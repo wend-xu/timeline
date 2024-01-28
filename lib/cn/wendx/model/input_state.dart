@@ -41,4 +41,12 @@ class InputState {
       content: content ?? this.content,
     );
   }
+
+  bool compMatch(String compName){
+   return compName == inputComp;
+  }
+
+  bool compMismatch(String compName){
+    return !compMatch(compName);
+  }
 }

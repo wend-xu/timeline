@@ -3,23 +3,23 @@ import 'package:timeline/cn/wendx/config/sys_constant.dart';
 
 class SendActionProvider extends ChangeNotifier{
 
-  List<SendActionCallBack> _callbackList = [];
+  final Map<String,SendActionCallBack> _callbackMap = {};
 
-  register(SendActionCallBack sendActionCallBack){
-    _callbackList.add(sendActionCallBack);
+  register(String key,SendActionCallBack sendActionCallBack){
+    _callbackMap[key] = sendActionCallBack;
   }
 
   send(){
-    for(SendActionCallBack callback in _callbackList){
-      callback(SendEvent.send);
-    }
+    _callbackMap.forEach((key, value) {
+      value(SendEvent.send);
+    });
     notifyListeners();
   }
 
   newline(){
-    for(SendActionCallBack callBack in _callbackList){
-      callBack(SendEvent.newline);
-    }
+    _callbackMap.forEach((key, value) {
+      value(SendEvent.newline);
+    });
     notifyListeners();
   }
 }

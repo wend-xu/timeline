@@ -132,7 +132,6 @@ class RefreshListViewState<T> extends State<RefreshListView<T>> {
       controlFinishLoad: true,
     );
     _scrollController = ScrollController();
-
   }
 
   @override
@@ -140,9 +139,6 @@ class RefreshListViewState<T> extends State<RefreshListView<T>> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (_cacheData.length == 0) {
         _easyRefreshController.callLoad().then((value) => _animateToLatest());
-      } else {
-        // _easyRefreshController.finishLoad(IndicatorResult.noMore);
-        //_animateToBottom().then((value) => _easyRefreshController.finishLoad(IndicatorResult.success));
       }
     });
     _log.i("数据尺寸： ${_cacheData.length} offset:$_offset");
@@ -155,7 +151,7 @@ class RefreshListViewState<T> extends State<RefreshListView<T>> {
           refresh();
         },
         child: ListView.builder(
-          reverse: true,
+            reverse: true,
             controller: _scrollController,
             itemCount: _cacheData.length,
             itemBuilder: (context, index) {
@@ -183,20 +179,20 @@ class RefreshListViewState<T> extends State<RefreshListView<T>> {
     return hasMore;
   }
 
-  void pushBatch(List<T> dataList){
+  void pushBatch(List<T> dataList) {
     this._cacheData.addAll(dataList);
     this._offset += dataList.length;
     _doRefresh();
   }
 
   void unshiftBatch(List<T> dataList, {bool refresh = false}) {
-    this._cacheData.insertAll(0,dataList);
+    this._cacheData.insertAll(0, dataList);
     this._offset += dataList.length;
     _doRefresh();
   }
 
   void unshift(T data, {bool refresh = false}) {
-    this._cacheData.insert(0,data);
+    this._cacheData.insert(0, data);
     this._offset++;
     if (refresh) {
       this._doRefresh();
@@ -223,9 +219,7 @@ class RefreshListViewState<T> extends State<RefreshListView<T>> {
   }
 
   Future<void> _animateToLatest() {
-    return _scrollController.animateTo(
-        0,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut);
+    return _scrollController.animateTo(0,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
   }
 }

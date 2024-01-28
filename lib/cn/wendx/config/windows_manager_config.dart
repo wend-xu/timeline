@@ -24,7 +24,7 @@ Future initWindows() async {
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.normal,
+      titleBarStyle: TitleBarStyle.hidden,
       windowButtonVisibility: true,
       // title: "这是个标题",
       alwaysOnTop: configIsEnable(winOnTop));
