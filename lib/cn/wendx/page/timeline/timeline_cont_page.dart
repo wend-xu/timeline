@@ -23,6 +23,8 @@ class TimelineContPage extends StatelessWidget {
 
   late InputState _initInputState;
 
+  late Key _timelineInputKey;
+
   TimelineContPage({
     super.key,
   }) {
@@ -34,6 +36,7 @@ class TimelineContPage extends StatelessWidget {
       inputComp: "timeline/cn/wendx/component/timeline_input",
       inputCompMode: TimelineInput.singleLineMode,
     );
+    _timelineInputKey = Key("${DateTime.now().millisecondsSinceEpoch}");
   }
 
   @override
@@ -76,16 +79,19 @@ class TimelineContPage extends StatelessWidget {
 
   Widget inputArea(
       BuildContext context, InputStateProvider inputStateProvider) {
+    var inputState = inputStateProvider.inputState;
     var background = Theme.of(context).colorScheme.background;
     return SizedBox(
-      height: inputStateProvider.inputState.inputCompMode ==
+      height: inputState.inputCompMode ==
               TimelineInput.singleLineMode
           ? 80
           : 240,
       child: Card(
         color: background,
         child: TimelineInput(
+          // key: _timelineInputKey,
           inputController: _inputController,
+          mode: inputState.inputCompMode,
         ),
       ),
     );
@@ -104,8 +110,9 @@ class TimelineContPage extends StatelessWidget {
 
   void whenSend(BuildContext context) {
     _inputController.unfocus();
-    if (_inputController.isEmpty()) {
+    if (_inputController.getPlainText().replaceAll("\n", "").trim().isEmpty) {
       SmartDialog.showToast("未输入内容");
+      return;
     }
 
     SmartDialog.showLoading(msg: "写入中");
@@ -119,7 +126,8 @@ class TimelineContPage extends StatelessWidget {
       _listController.send(writeInDb, refresh: true);
       _inputController.doClear();
       _inputController.focus();
-      Provider.of<InputStateProvider>(context, listen: false).changeWith(inputCompMode: TimelineInput.singleLineMode);
+      Provider.of<InputStateProvider>(context, listen: false)
+          .changeWith(inputCompMode: TimelineInput.singleLineMode);
       SmartDialog.dismiss();
     });
   }

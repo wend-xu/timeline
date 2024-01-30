@@ -4,8 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
-import 'package:timeline/cn/wendx/provider/input_state_provider.dart';
 
 typedef InputChangeListen = void Function(
     String plainText, String richText, DateTime date);
@@ -38,11 +36,11 @@ class TimelineInput extends StatefulWidget {
 class TimelineInputState extends State<TimelineInput> {
   static final Logger _log = Logger();
 
-  late final InputChangeListen? _changeListen;
+  late InputChangeListen? _changeListen;
 
   late final QuillController _quillController;
 
-  late final TimelineInputController? _controller;
+  late TimelineInputController? _controller;
 
   late String _mode;
 
@@ -50,11 +48,22 @@ class TimelineInputState extends State<TimelineInput> {
 
   @override
   void initState() {
+    widgetFieldBind();
+    _quillController = QuillController.basic();
+  }
+
+
+  @override
+  void didUpdateWidget(TimelineInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    widgetFieldBind();
+  }
+
+  void widgetFieldBind(){
     _changeListen = widget._changeListen;
     _mode = widget._mode;
     _controller = widget._controller;
     _controller?.bind(this);
-    _quillController = QuillController.basic();
   }
 
   @override
@@ -67,13 +76,7 @@ class TimelineInputState extends State<TimelineInput> {
               flex: 7,
               child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: Consumer<InputStateProvider>(
-                    builder: (_, inputStateProvider, child) {
-                      var inputCompState =
-                          inputStateProvider.inputState.inputCompMode;
-                      return _inputUseQuill(_quillController, inputCompState);
-                    },
-                  ))),
+                  child: _inputUseQuill(_quillController, _mode))),
         ],
       ),
     );
@@ -97,6 +100,7 @@ class TimelineInputState extends State<TimelineInput> {
 
     const QuillEditorConfigurations editorConfigurations =
         QuillEditorConfigurations(
+      placeholder: "Enter发送，Shift+Enter换行",
       readOnly: false,
     );
 
@@ -135,37 +139,41 @@ class TimelineInputController {
     _state = timelineInputState;
   }
 
-  void focus(){
-    hasBind();
+  bool hasBind() {
+    return _state != null;
+  }
+
+  void focus() {
+    hasBindCheck();
     _state!._focusNode.requestFocus();
   }
 
-  void unfocus(){
-    hasBind();
+  void unfocus() {
+    hasBindCheck();
     _state!._focusNode.unfocus();
   }
 
   void newline() {}
 
   bool isEmpty() {
-    hasBind();
+    hasBindCheck();
     return _state!._quillController.document.isEmpty();
   }
 
   String getPlainText() {
-    hasBind();
+    hasBindCheck();
     return _state!._quillController.document.toPlainText();
   }
 
   String getRichText() {
-    hasBind();
+    hasBindCheck();
     return jsonEncode(_state!._quillController.document.toDelta().toJson());
   }
 
   void registerChangeLister() {}
 
   void doClear() {
-    hasBind();
+    hasBindCheck();
     _state!._quillController.clear();
   }
 
@@ -178,13 +186,13 @@ class TimelineInputController {
   }
 
   void _changeMode(String mode) {
-    hasBind();
+    hasBindCheck();
     _state!.setState(() {
       _state!._mode = mode;
     });
   }
 
-  void hasBind() {
+  void hasBindCheck() {
     if (_state == null) {
       throw Exception("TimelineInputController 未绑定至 TimelineState");
     }
