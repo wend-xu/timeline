@@ -12,6 +12,7 @@ import 'package:timeline/cn/wendx/model/timeline_search.dart';
 import 'package:timeline/cn/wendx/provider/hot_key/send_action_provider.dart';
 import 'package:timeline/cn/wendx/provider/input_state_provider.dart';
 import 'package:timeline/cn/wendx/service/timeline_service.dart';
+import 'package:timeline/cn/wendx/util/common_util.dart';
 import 'package:timeline/cn/wendx/util/opencc_util.dart';
 
 class TimelineContPage extends StatelessWidget {
@@ -114,7 +115,7 @@ class TimelineContPage extends StatelessWidget {
     SmartDialog.showLoading(msg: "写入中");
     var plainText = _inputController.getPlainText();
     var richText = _inputController.getRichText();
-    var normalizeText =GetIt.instance.get<OpenccUtil>().t2s(plainText);
+    var normalizeText = OpenccUtil.normalizeText(plainText);
     var timeline = Timeline.create(plainText,
         createTime: DateTime.timestamp(),
         contentRich: richText,

@@ -44,8 +44,9 @@ void main() async {
   await hotkeyInit();
 
   /// todo 后续调整位置
-  var openccUtil = OpenccUtil();
-  GetIt.instance.registerSingleton<OpenccUtil>(openccUtil);
+  // var openccUtil = OpenccUtil();
+  // GetIt.instance.registerSingleton<OpenccUtil>(openccUtil);
+  OpenccUtil.init();
   runApp(const MyApp());
 }
 
