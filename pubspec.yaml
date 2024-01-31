@@ -52,9 +52,10 @@ dependencies:
   json_annotation: ^4.8.1 # json注解
   provider: ^6.0.5 # 状态管理
   easy_refresh: ^3.3.2+1 # 刷新
-  flutter_quill: ^8.6.2
-  flutter_quill_extensions: ^0.7.0
+  flutter_quill: ^8.6.2 #富文本编辑器
+  flutter_quill_extensions: ^0.7.0 #富文本编辑器扩展
   flutter_quill_test: ^0.0.5
+  flutter_opencc_ffi: ^0.0.3 # 简繁体转换
 
 
 
@@ -85,6 +86,9 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/
+    - assets/opencc/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

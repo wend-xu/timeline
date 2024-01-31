@@ -31,13 +31,13 @@ class Timeline
     return _$TimelineFromJson(json);
   }
 
-  factory Timeline.create(String contentText, {int? id, String? contentRich, DateTime? createTime}){
+  factory Timeline.create(String contentText, {int? id, String? contentRich,String? contentNormalize, DateTime? createTime}){
     return Timeline(id: id ?? IdGen.id(),
         createTime: createTime??DateTime.now(),
         modifyTime: DateTime.now(),
         contentRich: contentRich??contentText,
         contentText: contentText,
-        contentNormalize:contentText,
+        contentNormalize:contentNormalize??contentText,
         version:1,
         delStatus:Const.notDel);
   }

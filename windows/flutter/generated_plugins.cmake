@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
+  flutter_opencc_ffi_windows
   gal
   hotkey_manager
   pasteboard

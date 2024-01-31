@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:timeline/cn/wendx/config/get_it_helper.dart';
 import 'package:timeline/cn/wendx/config/hotkey_config.dart';
 import 'package:timeline/cn/wendx/config/service_config.dart';
 import 'package:timeline/cn/wendx/config/windows_manager_config.dart';
@@ -14,6 +16,7 @@ import 'package:timeline/cn/wendx/provider/input_state_provider.dart';
 import 'package:timeline/cn/wendx/provider/navi_provider.dart';
 import 'package:timeline/cn/wendx/provider/theme_provider.dart';
 import 'package:timeline/cn/wendx/route/name_route_manager.dart';
+import 'package:timeline/cn/wendx/util/opencc_util.dart';
 
 import 'cn/wendx/config/repository_config.dart';
 import 'cn/wendx/config/sys_constant.dart';
@@ -40,6 +43,9 @@ void main() async {
   /// 注册快捷键
   await hotkeyInit();
 
+  /// todo 后续调整位置
+  var openccUtil = OpenccUtil();
+  GetIt.instance.registerSingleton<OpenccUtil>(openccUtil);
   runApp(const MyApp());
 }
 

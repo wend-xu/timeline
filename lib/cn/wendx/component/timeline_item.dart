@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:timeline/cn/wendx/model/timeline.dart';
 
 /// 拆分为三个widget实现
 /// item 展示时间 修改次数， 双击事件可以不在这里实现
-class TimelineItem extends StatelessWidget{
+class TimelineItem extends StatelessWidget {
   final Timeline item;
 
   TimelineItem(this.item);
@@ -29,12 +32,32 @@ class TimelineItem extends StatelessWidget{
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child: SelectableText(item.contentRich),
+            child: viewUseQuill(item),
           ),
           const Divider(
             height: 10,
           ),
         ],
+      ),
+    );
+  }
+
+  SelectableText viewUseNormalText(Timeline timeline){
+    return SelectableText(timeline.contentText);
+  }
+
+  QuillProvider viewUseQuill(Timeline timeline){
+    var quillController = QuillController.basic();
+    quillController.document = Document.fromJson(jsonDecode(timeline.contentRich));
+    return QuillProvider(
+      configurations: QuillConfigurations(
+        controller: quillController,
+        sharedConfigurations: const QuillSharedConfigurations(
+          locale: Locale('zh'),
+        ),
+      ),
+      child: QuillEditor.basic(
+        configurations: const QuillEditorConfigurations(readOnly: true),
       ),
     );
   }

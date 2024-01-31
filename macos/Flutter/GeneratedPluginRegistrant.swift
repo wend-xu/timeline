@@ -7,6 +7,7 @@ import Foundation
 
 import device_info_plus
 import file_selector_macos
+import flutter_opencc_ffi_macos
 import gal
 import hotkey_manager
 import pasteboard
@@ -21,6 +22,7 @@ import window_manager
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   DeviceInfoPlusMacosPlugin.register(with: registry.registrar(forPlugin: "DeviceInfoPlusMacosPlugin"))
   FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))
+  FlutterOpenccFfiPlugin.register(with: registry.registrar(forPlugin: "FlutterOpenccFfiPlugin"))
   GalPlugin.register(with: registry.registrar(forPlugin: "GalPlugin"))
   HotkeyManagerPlugin.register(with: registry.registrar(forPlugin: "HotkeyManagerPlugin"))
   PasteboardPlugin.register(with: registry.registrar(forPlugin: "PasteboardPlugin"))

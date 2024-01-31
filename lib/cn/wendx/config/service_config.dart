@@ -7,11 +7,12 @@ import 'package:timeline/cn/wendx/repo/sys_config_repository.dart';
 import 'package:timeline/cn/wendx/service/base_service.dart';
 import 'package:timeline/cn/wendx/service/impl/sys_config_service_impl.dart';
 import 'package:timeline/cn/wendx/service/impl/timeline_service_impl.dart';
+import 'package:timeline/cn/wendx/util/opencc_util.dart';
 
 Future registerService() async {
   var serviceInitHelper = ServiceInitHelper([
     await SysConfigServiceImpl.instance(),
-    await TimelineServiceImpl.instanceAsync()
+    await TimelineServiceImpl.instanceAsync(),
   ]);
 
   serviceInitHelper.registerToIoc();

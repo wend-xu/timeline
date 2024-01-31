@@ -1,4 +1,3 @@
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get_it/get_it.dart';
@@ -13,6 +12,7 @@ import 'package:timeline/cn/wendx/model/timeline_search.dart';
 import 'package:timeline/cn/wendx/provider/hot_key/send_action_provider.dart';
 import 'package:timeline/cn/wendx/provider/input_state_provider.dart';
 import 'package:timeline/cn/wendx/service/timeline_service.dart';
+import 'package:timeline/cn/wendx/util/opencc_util.dart';
 
 class TimelineContPage extends StatelessWidget {
   late TimelineService timelineService;
@@ -22,8 +22,6 @@ class TimelineContPage extends StatelessWidget {
   late TimelineInputController _inputController;
 
   late InputState _initInputState;
-
-  late Key _timelineInputKey;
 
   TimelineContPage({
     super.key,
@@ -36,7 +34,6 @@ class TimelineContPage extends StatelessWidget {
       inputComp: "timeline/cn/wendx/component/timeline_input",
       inputCompMode: TimelineInput.singleLineMode,
     );
-    _timelineInputKey = Key("${DateTime.now().millisecondsSinceEpoch}");
   }
 
   @override
@@ -82,10 +79,8 @@ class TimelineContPage extends StatelessWidget {
     var inputState = inputStateProvider.inputState;
     var background = Theme.of(context).colorScheme.background;
     return SizedBox(
-      height: inputState.inputCompMode ==
-              TimelineInput.singleLineMode
-          ? 80
-          : 240,
+      height:
+          inputState.inputCompMode == TimelineInput.singleLineMode ? 80 : 240,
       child: Card(
         color: background,
         child: TimelineInput(
@@ -112,20 +107,22 @@ class TimelineContPage extends StatelessWidget {
     _inputController.unfocus();
     if (_inputController.getPlainText().replaceAll("\n", "").trim().isEmpty) {
       SmartDialog.showToast("未输入内容");
+      _inputController.cleanAndFocus();
       return;
     }
 
     SmartDialog.showLoading(msg: "写入中");
     var plainText = _inputController.getPlainText();
     var richText = _inputController.getRichText();
-
+    var normalizeText =GetIt.instance.get<OpenccUtil>().t2s(plainText);
     var timeline = Timeline.create(plainText,
-        createTime: DateTime.timestamp(), contentRich: richText);
+        createTime: DateTime.timestamp(),
+        contentRich: richText,
+        contentNormalize: normalizeText);
 
     timelineService.write(timeline).then((writeInDb) {
       _listController.send(writeInDb, refresh: true);
-      _inputController.doClear();
-      _inputController.focus();
+      _inputController.cleanAndFocus();
       Provider.of<InputStateProvider>(context, listen: false)
           .changeWith(inputCompMode: TimelineInput.singleLineMode);
       SmartDialog.dismiss();

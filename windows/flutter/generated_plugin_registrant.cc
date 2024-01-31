@@ -7,6 +7,7 @@
 #include "generated_plugin_registrant.h"
 
 #include <file_selector_windows/file_selector_windows.h>
+#include <flutter_opencc_ffi_windows/flutter_opencc_ffi_plugin_c_api.h>
 #include <gal/gal_plugin_c_api.h>
 #include <hotkey_manager/hotkey_manager_plugin.h>
 #include <pasteboard/pasteboard_plugin.h>
@@ -18,6 +19,8 @@
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   FileSelectorWindowsRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FileSelectorWindows"));
+  FlutterOpenccFfiPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("FlutterOpenccFfiPluginCApi"));
   GalPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("GalPluginCApi"));
   HotkeyManagerPluginRegisterWithRegistrar(

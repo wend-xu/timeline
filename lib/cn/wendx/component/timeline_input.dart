@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:logger/logger.dart';
+import 'package:timeline/cn/wendx/config/logger_helper.dart';
 
 typedef InputChangeListen = void Function(
     String plainText, String richText, DateTime date);
@@ -196,5 +197,10 @@ class TimelineInputController {
     if (_state == null) {
       throw Exception("TimelineInputController 未绑定至 TimelineState");
     }
+  }
+
+  void cleanAndFocus(){
+    doClear();
+    focus();
   }
 }
